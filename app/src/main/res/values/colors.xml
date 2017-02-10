@@ -3,4 +3,5 @@
     <color name="colorPrimary">#CFB53B</color>
     <color name="colorPrimaryDark">#000080</color>
     <color name="colorAccent">#FFFFFF</color>
+    <color name="colorTableHeader">#DDDDDD</color>
 </resources>

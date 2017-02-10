@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_join_party"
     android:layout_width="match_parent"
@@ -8,6 +8,35 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/colorPrimary"
     tools:context="com.myousic.ActivityJoinParty">
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/party_id"
+        android:textSize="@dimen/title_1"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+    <EditText
+        android:id="@+id/party_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:padding="@dimen/text_box_padding"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+    <Button
+        android:id="@+id/join"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/join"
+        android:textSize="@dimen/big_button_text"
+        android:textColor="@color/colorPrimary"
+        android:onClick="join"/>
+
+</LinearLayout>
