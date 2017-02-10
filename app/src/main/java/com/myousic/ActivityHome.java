@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.example.ndharasz.myousic.R;
+import com.myousic.R;
 import com.spotify.sdk.android.authentication.LoginActivity;
 
 public class ActivityHome extends AppCompatActivity {

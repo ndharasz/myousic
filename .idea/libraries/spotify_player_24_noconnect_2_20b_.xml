@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.spotify.sdk/spotify-player-24-noconnect-2.20b/res" />
       <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.spotify.sdk/spotify-player-24-noconnect-2.20b/jars/classes.jar!/" />
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.spotify.sdk/spotify-player-24-noconnect-2.20b/jars/libs/jnihelpers-1.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

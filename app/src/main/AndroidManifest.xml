@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ndharasz.myousic">
+    package="com.myousic"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-sdk tools:overrideLibrary="com.spotify.sdk.android.authentication, com.spotify.sdk.android.player"/>
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -21,7 +23,8 @@
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name="com.myousic.ActivityJoinParty" />
-        <activity android:name="com.myousic.ActivityQueue"></activity>
+        <activity android:name="com.myousic.ActivityQueue" />
+        <activity android:name="com.myousic.ActivitySearch"></activity>
     </application>
 
 </manifest>

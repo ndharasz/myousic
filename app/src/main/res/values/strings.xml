@@ -6,6 +6,7 @@
     <string name="submit">Submit</string>
     <string name="queue">Queue</string>
     <string name="add">Add Song</string>
+    <string name="search_hint">Song, artist, or album</string>
 
     <string name="table_song">Song</string>
     <string name="table_artist">Artist</string>

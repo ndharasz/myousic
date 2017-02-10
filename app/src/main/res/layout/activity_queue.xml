@@ -59,7 +59,8 @@
         android:background="@color/colorPrimaryDark"
         android:text="@string/add"
         android:textSize="@dimen/big_button_text"
-        android:textColor="@color/colorPrimary"/>
+        android:textColor="@color/colorPrimary"
+        android:onClick="addSong"/>
 
 
 </LinearLayout>
