@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.myousic"
-    xmlns:tools="http://schemas.android.com/tools">
-    <uses-sdk tools:overrideLibrary="com.spotify.sdk.android.authentication, com.spotify.sdk.android.player"/>
+    package="com.myousic">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
