@@ -4,14 +4,13 @@
     android:id="@+id/activity_queue"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/colorPrimary"
-    tools:context="com.myousic.ActivityQueue">
+    tools:context="com.myousic.activities.ActivityQueue">
 
     <TextView
         android:id="@+id/party_id_field"
@@ -71,5 +70,67 @@
         android:textColor="@color/colorPrimary"
         android:onClick="addSong"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+        <ImageView
+            android:id="@+id/image"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="2"/>
 
+        <LinearLayout
+            android:id="@+id/result_fields"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:id="@+id/song"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/table_text"
+                android:textColor="@color/colorAccent"
+                android:ellipsize="end"
+                android:singleLine="true"/>
+
+            <TextView
+                android:id="@+id/artistAlbum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/table_text_small"
+                android:textColor="@color/colorAccent"
+                android:ellipsize="end"
+                android:singleLine="true"/>
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/play_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/ic_media_play"
+            android:onClick="play"/>
+        <Button
+            android:id="@+id/pause_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="@android:drawable/ic_media_pause"
+            android:onClick="pause"/>
+        <Button
+            android:id="@+id/next_btn"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/ic_media_next"
+            android:onClick="next"/>
+    </LinearLayout>
 </LinearLayout>

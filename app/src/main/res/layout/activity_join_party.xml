@@ -11,7 +11,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/colorPrimary"
-    tools:context="com.myousic.ActivityJoinParty">
+    tools:context="com.myousic.activities.ActivityJoinParty">
 
     <TextView
         android:layout_width="wrap_content"
