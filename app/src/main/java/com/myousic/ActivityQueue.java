@@ -61,10 +61,11 @@ public class ActivityQueue extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                String removedSong = (String) dataSnapshot.child("name").getValue();
                 for(int x = 0; x < tableLayout.getChildCount(); x++) {
                     TableRow song = (TableRow) tableLayout.getChildAt(x);
-                    String name = ((TextView)song.findViewById(R.id.song_name)).getText().toString();
-                    if(name.equals(dataSnapshot.child("name").toString())) {
+                    String name = ((TextView) song.getChildAt(0)).getText().toString();
+                    if(name.equals(removedSong)) {
                         tableLayout.removeView(song);
                         break;
                     }
