@@ -15,11 +15,13 @@ public class SearchResult {
     private String artist;
     private String album;
     private String imageurl;
+    private String uri;
 
-    public SearchResult(String song, String artist, String album) {
+    public SearchResult(String song, String artist, String album, String uri) {
         this.song = song;
         this.artist = artist;
         this.album = album;
+        this.uri = uri;
     }
 
     public String getSong() {
@@ -44,5 +46,21 @@ public class SearchResult {
 
     public void setAlbum(String album) {
         this.album = album;
+    }
+
+    public String getImageurl() {
+        return imageurl;
+    }
+
+    public void setImageurl(String imageurl) {
+        this.imageurl = imageurl;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 }

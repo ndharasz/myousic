@@ -44,7 +44,7 @@ public class WebAPIWrapper {
     public void search(String query, String type, final SearchResultResponseListener searchResultResponseListener) {
         Log.d(TAG, "Initiating request");
         // Sanitize query!
-        String url = "https://api.spotify.com/v1/search?q=" + query.replaceAll(" ", "%20") + "&type=" + type + "&limit=";
+        String url = "https://api.spotify.com/v1/search?q=" + query.replaceAll(" ", "%20") + "&type=" + type;
         JSONArray response = null;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
@@ -58,7 +58,8 @@ public class WebAPIWrapper {
                         String song = jsonArray.getJSONObject(i).getString("name");
                         String artist = jsonArray.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
                         String album = jsonArray.getJSONObject(i).getJSONObject("album").getString("name");
-                        searchResults.add(new SearchResult(song, artist, album));
+                        String uri = jsonArray.getJSONObject(i).getString("uri");
+                        searchResults.add(new SearchResult(song, artist, album, uri));
                     }
                     searchResultResponseListener.onResponse(searchResults);
                 } catch (JSONException e) {
