@@ -19,6 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
 
+import static com.myousic.R.layout.layout_queue_row;
+
 public class ActivityQueue extends AppCompatActivity {
     private String TAG = "ActivityQueue";
     protected TableLayout tableLayout;
@@ -45,10 +47,11 @@ public class ActivityQueue extends AppCompatActivity {
                 QueuedSong result = (QueuedSong) dataSnapshot.getValue(QueuedSong.class);
                 Log.d(TAG, "Song added: " + result.getName());
                 TableRow row = (TableRow) LayoutInflater.from(ActivityQueue.this)
-                        .inflate(R.layout.layout_queue_row, null);
+                        .inflate(layout_queue_row, null);
                 ((TextView)row.findViewById(R.id.song_name)).setText(result.getName());
                 ((TextView)row.findViewById(R.id.artist_name)).setText(result.getArtist());
                 tableLayout.addView(row);
+                tableLayout.invalidate();
             }
 
             @Override
@@ -58,7 +61,15 @@ public class ActivityQueue extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                for(int x = 0; x < tableLayout.getChildCount(); x++) {
+                    TableRow song = (TableRow) tableLayout.getChildAt(x);
+                    String name = ((TextView)song.findViewById(R.id.song_name)).getText().toString();
+                    if(name.equals(dataSnapshot.child("name").toString())) {
+                        tableLayout.removeView(song);
+                        break;
+                    }
+                }
+                tableLayout.invalidate();
             }
 
             @Override

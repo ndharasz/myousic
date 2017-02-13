@@ -85,12 +85,13 @@ public class ActivitySearch extends AppCompatActivity {
             ResultRow resultRow = (ResultRow) v;
             QueuedSong queuedSong = new QueuedSong(resultRow.getSearchResult());
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = database.getReference("parties/").child(partyID).child(queuedSong.getName());
+            DatabaseReference databaseReference = database.getReference("parties/").child(partyID)
+                    .child(Long.toString(queuedSong.getTimestamp()));
             databaseReference.setValue(queuedSong);
             Toast toast = Toast.makeText(this, "Song added: " + queuedSong.getName(), Toast.LENGTH_SHORT);
             toast.show();
         } catch (Exception e) {
-            Log.d(TAG, "Database error. Song not queued");
+            Log.d(TAG, "Database error. Song not queued: " + e.toString());
         }
     }
 }
