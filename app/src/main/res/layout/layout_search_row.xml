@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.myousic.widgets.ResultRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:onClick="addSong">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:id="@+id/result_fields"
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="7"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:id="@+id/result_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/table_text"
+            android:textColor="@color/colorAccent"/>
+
+        <TextView
+            android:id="@+id/result_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/table_text_small"
+            android:textColor="@color/colorAccent"/>
+
+    </LinearLayout>
+
+</com.myousic.widgets.ResultRow>

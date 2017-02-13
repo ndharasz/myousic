@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ndharasz.myousic">
+    package="com.myousic">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -20,7 +20,10 @@
         <activity
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity android:name="com.myousic.ActivityJoinParty"></activity>
+        <activity android:name=".ActivityJoinParty" />
+        <activity android:name=".ActivityQueue" />
+        <activity android:name=".ActivitySearch" />
+        <activity android:name=".ActivityPartyAdmin" />
     </application>
 
 </manifest>

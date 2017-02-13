@@ -5,7 +5,7 @@
     android:id="@+id/activity_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.ndharasz.myousic.ActivityHome"
+    tools:context="com.myousic.ActivityHome"
     android:orientation="vertical">
 
     <Button
@@ -16,7 +16,8 @@
         android:background="@color/colorPrimary"
         android:text="@string/join"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/title_1"/>
+        android:textSize="@dimen/title_1"
+        android:onClick="join"/>
     <Button
         android:id="@+id/create_btn"
         android:layout_width="match_parent"
@@ -25,5 +26,6 @@
         android:background="@color/colorPrimaryDark"
         android:text="@string/create"
         android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/title_1"/>
+        android:textSize="@dimen/title_1"
+        android:onClick="create"/>
 </LinearLayout>
