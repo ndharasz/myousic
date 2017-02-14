@@ -32,37 +32,22 @@ import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 
 import java.net.URI;
+import java.util.Queue;
 import java.util.Random;
 
 public class ActivityPartyAdmin extends AppCompatActivity {
-    private String TAG = "ActivityPartyAdmin";
+    private static final String TAG = "ActivityPartyAdmin";
     private FirebaseDatabase db;
     DatabaseReference currParty;
     private SharedPreferences loginPrefs;
     private String authToken;
-    String currentSongURI = null;
-    int currentSongMs = 0;
+
+    QueuedSong currentSong;
+    QueuedSong nextSong;
 
     String id;
 
     TextView idField;
-
-    SpotifyPlayer player;
-
-    private final Player.OperationCallback operationCallback = new Player.OperationCallback() {
-        @Override
-        public void onSuccess() {
-            Log.d(TAG, "Playing");
-            Log.d(TAG, "State: " + player.getPlaybackState().isPlaying);
-            pause.setVisibility(View.VISIBLE);
-            play.setVisibility(View.GONE);
-        }
-
-        @Override
-        public void onError(Error error) {
-            Toast.makeText(ActivityPartyAdmin.this, "Unable to play: " + error.name(), Toast.LENGTH_SHORT).show();
-        }
-    };
 
     Button play;
     Button pause;
@@ -71,6 +56,8 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     ImageView currImg;
     TextView currSong;
     TextView currArtistAlbum;
+
+    CustomAudioController audioControllerInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,31 +69,12 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         authToken = loginPrefs.getString("token", "");
 
         idSetup();
-        createPlayer();
         buttonSetup();
         currSongSetup();
     }
 
-    private void createPlayer() {
-        if (player == null) {
-            Log.d(TAG, "Creating player with auth token: " + authToken);
-            Log.d(TAG, "Client ID: " + getString(R.string.clientID));
-            Config playerConfig = new Config(getApplicationContext(), authToken, getString(R.string.clientID));
-            Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
-                @Override
-                public void onInitialized(SpotifyPlayer spotifyPlayer) {
-                    player = spotifyPlayer;
-                    Log.d(TAG, "Player initialized");
-                }
-
-                @Override
-                public void onError(Throwable error) {
-                    Log.d(TAG, "Error in initilzation" + error.getMessage());
-                }
-            });
-        } else {
-            player.login(authToken);
-        }
+    protected void onStart() {
+        createPlayer();
     }
 
     protected void idSetup() {
@@ -118,9 +86,16 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         db.getReference().child("parties").child(id).setValue("");
         currParty = db.getReference().child("parties").child(id).getRef();
         currParty.addChildEventListener(new CustomChildEventListener(
-                 (TableLayout)findViewById(R.id.queue_table), this));
+                (TableLayout)findViewById(R.id.queue_table), this));
         idField = (TextView)findViewById(R.id.party_id_field);
         idField.setText("Party ID: "+id);
+    }
+
+    private void createPlayer() {
+        Log.d(TAG, "Creating player with auth token: " + authToken);
+        Log.d(TAG, "Client ID: " + getString(R.string.clientID));
+        audioControllerInstance = CustomAudioController.getInstance(ActivityPartyAdmin.this,
+                authToken, getString(R.string.clientID));
     }
 
     protected void addSong(View v) {
@@ -133,25 +108,30 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         pause = (Button)findViewById(R.id.pause_btn);
         next = (Button)findViewById(R.id.next_btn);
     }
+
     protected void currSongSetup() {
         currImg = (ImageView)findViewById(R.id.image);
         currSong = (TextView)findViewById(R.id.song);
         currArtistAlbum = (TextView)findViewById(R.id.artistAlbum);
     }
 
-    protected void play(View v) {
-        if(currentSongURI == null) {
-            Log.d(TAG, "No URI string; fetch next song");
-            currParty.orderByChild("timestamp").limitToFirst(1)
+    protected void removeSongFromQueue(QueuedSong song) {
+        // We should add this song to a "Currently playing" table in the database
+        // so that other apps can see the current song
+        currParty.child(Long.toString(song.getTimestamp())).removeValue();
+    }
+
+    // Puts the next song in the nextSong variable
+    protected QueuedSong getNextSong() {
+        currParty.orderByChild("timestamp").limitToFirst(1)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot child : dataSnapshot.getChildren()) {
-                            currentSongURI = child.child("uri").getValue().toString();
-                            Log.d(TAG, "currentSongURI = " + currentSongURI);
+                            nextSong = (QueuedSong) child.getValue(QueuedSong.class);
+                            Log.d(TAG, "currentSongURI = " + currentSong.getUri());
                             currSong.setText(child.child("name").getValue().toString());
                             currArtistAlbum.setText(child.child("artist").getValue().toString());
-                            currParty.child(child.getKey().toString()).removeValue();
                         }
                     }
 
@@ -160,32 +140,45 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
                     }
                 });
-            player.refreshCache();
-            player.playUri(operationCallback, currentSongURI, 0, 0);
+        return nextSong;
+    }
+
+    protected void play(View v) {
+        if(!audioControllerInstance.isPaused()) {
+            // if there is no song to play, fetch the song
+            if (currSong == null) {
+                currentSong = getNextSong();
+            }
+            // remove the song from table
+            removeSongFromQueue(currentSong);
+            // play the current song
+            audioControllerInstance.play(currentSong.getUri());
+            // queue the next song
+            getNextSong();
+            if (nextSong != null)
+                audioControllerInstance.queueNext(nextSong.getUri());
         } else {
-            player.playUri(operationCallback, currentSongURI, 0, currentSongMs);
+            // if the audio was previously paused, just resume play
+            audioControllerInstance.resume();
         }
     }
 
     protected void pause(View v) {
-        player.pause(new Player.OperationCallback() {
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "Song paused");
-                currentSongMs = (int)player.getPlaybackState().positionMs;
-                play.setVisibility(View.VISIBLE);
-                pause.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onError(Error error) {
-                Toast.makeText(ActivityPartyAdmin.this, "Unable to pause", Toast.LENGTH_SHORT).show();
-            }
-        });
+        boolean paused = audioControllerInstance.resume();
+        if (paused) {
+            play.setVisibility(View.VISIBLE);
+            pause.setVisibility(View.GONE);
+        } else {
+            Log.d(TAG, "Song was not able to be paused");
+        }
     }
 
     protected void next(View v) {
-        currentSongURI = null;
-        play(v);
+        // skip to the next song, update the local song list,
+        // then queue next song
+        audioControllerInstance.skip();
+        currentSong = nextSong;
+        getNextSong();
+        audioControllerInstance.queueNext(nextSong.getUri());
     }
 }

@@ -1,62 +1,111 @@
 package com.myousic.util;
 
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
+import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
-import com.spotify.sdk.android.player.AudioController;
+import com.myousic.R;
+import com.spotify.sdk.android.player.Config;
+import com.spotify.sdk.android.player.Error;
+import com.spotify.sdk.android.player.Player;
+import com.spotify.sdk.android.player.Spotify;
+import com.spotify.sdk.android.player.SpotifyPlayer;
 
-/**
- * Created by ndharasz on 2/13/2017.
+/*
+ * Brian Woodbury
+ *
+ * Singleton containing all the play methods for spotify
  */
-
-public class CustomAudioController implements AudioController {
-    private AudioTrack track = null;
+public class CustomAudioController {
+    private static CustomAudioController instance;
     private static final String TAG = "CustomAudioController";
 
-    @Override
-    public void start() {
-    }
+    private SpotifyPlayer player;
+    private boolean isPaused = false;
 
-    @Override
-    public void stop() {
-    }
-
-    @Override
-    public int onAudioDataDelivered(short[] samples, int numSamples, int rate, int channels) {
-        int written;
-        if (track == null) {
-            int channel = (channels == 0) ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO;
-            int buffSize = AudioTrack.getMinBufferSize(rate, channel,
-                    AudioFormat.ENCODING_PCM_16BIT);
-            track = new AudioTrack(AudioManager.STREAM_MUSIC, rate, channel,
-                    AudioFormat.ENCODING_PCM_16BIT, buffSize, AudioTrack.MODE_STREAM);
-            written = track.write(samples, 0, numSamples);
-            track.play();
-        } else {
-            written = track.write(samples, 0, numSamples);
+    private final Player.OperationCallback operationCallback = new Player.OperationCallback() {
+        @Override
+        public void onSuccess() {
+            Log.d(TAG, "Task completed");
         }
-        return written;
+
+        @Override
+        public void onError(Error error) {
+            Log.d(TAG, "Error completing task");
+        }
+    };
+
+    public CustomAudioController(Context context, String authToken, String clientID) {
+        Config playerConfig = new Config(context, authToken, clientID);
+        Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
+            @Override
+            public void onInitialized(SpotifyPlayer spotifyPlayer) {
+                player = spotifyPlayer;
+                Log.d(TAG, "Player initialized");
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                Log.d(TAG, "Error in initilzation" + error.getMessage());
+            }
+        });
+        if (!player.isInitialized()) {
+            Log.d(TAG, "Initialization has not yet occured");
+        }
     }
 
-    @Override
-    public void onAudioFlush() {
-        if(track != null)
-            track.flush();
+    public static CustomAudioController getInstance(Context context, String authToken, String clientID) {
+        if (instance == null) {
+            return new CustomAudioController(context, authToken, clientID);
+        } else {
+            instance.player.login(authToken);
+            return instance;
+        }
     }
 
-    @Override
-    public void onAudioPaused() {
-        if(track != null)
-            track.pause();
-        else
-            Log.d(TAG, "Audio was not playing");
+    public boolean play(String uri) {
+        if (!player.getPlaybackState().isPlaying) {
+            isPaused = false;
+            player.playUri(operationCallback, uri, 0, 0);
+            return true;
+        } else {
+            Log.d(TAG, "Player was already playing");
+            return false;
+        }
     }
 
-    @Override
-    public void onAudioResumed(){
-        if(track != null)
-            track.play();
+    public void queueNext(String uri) {
+        player.queue(operationCallback, uri);
+    }
+
+    public void skip() {
+        player.skipToNext(operationCallback);
+    }
+
+    public boolean pause() {
+        if (player.getPlaybackState().isPlaying) {
+            isPaused = true;
+            player.pause(operationCallback);
+            return true;
+        } else {
+            Log.d(TAG, "Player was already paused");
+            return false;
+        }
+    }
+
+    public boolean resume() {
+        if (!player.getPlaybackState().isPlaying) {
+            isPaused = false;
+            player.resume(operationCallback);
+            return true;
+        } else {
+            Log.d(TAG, "Player was already playing");
+            return false;
+        }
+    }
+
+    public boolean isPaused() {
+        return isPaused;
     }
 }
