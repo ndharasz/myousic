@@ -10,4 +10,6 @@
 
     <string name="table_song">Song</string>
     <string name="table_artist">Artist</string>
+
+    <string name="clientID">dd2b9841d81d4b95938909baf24604f6</string>
 </resources>

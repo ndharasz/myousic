@@ -1,4 +1,4 @@
-package com.myousic;
+package com.myousic.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.myousic.R;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
-import com.spotify.sdk.android.authentication.LoginActivity;
 
 import static com.spotify.sdk.android.authentication.LoginActivity.REQUEST_CODE;
 
@@ -29,7 +29,7 @@ public class ActivityHome extends AppCompatActivity {
 
     protected void create(View v) {
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(
-                "dd2b9841d81d4b95938909baf24604f6", AuthenticationResponse.Type.TOKEN,
+                getString(R.string.clientID), AuthenticationResponse.Type.TOKEN,
                 "myousic://callback");
         builder.setScopes(new String[]{"streaming"});
         AuthenticationRequest request = builder.build();

@@ -1,4 +1,4 @@
-package com.myousic;
+package com.myousic.activities;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;

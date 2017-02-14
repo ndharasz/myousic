@@ -11,7 +11,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/colorPrimary"
-    tools:context="com.myousic.ActivityQueue">
+    tools:context="com.myousic.activities.ActivityQueue">
 
     <TextView
         android:layout_width="match_parent"
