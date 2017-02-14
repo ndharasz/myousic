@@ -160,6 +160,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
                     }
                 });
+            player.refreshCache();
             player.playUri(operationCallback, currentSongURI, 0, 0);
         } else {
             player.playUri(operationCallback, currentSongURI, 0, currentSongMs);
