@@ -47,32 +47,27 @@ public class CustomAudioController {
 
             @Override
             public void onError(Throwable error) {
-                Log.d(TAG, "Error in initilzation" + error.getMessage());
+                Log.d(TAG, "Error in initialization " + error);
             }
         });
-        if (!player.isInitialized()) {
+        if (player == null) {
             Log.d(TAG, "Initialization has not yet occured");
         }
     }
 
     public static CustomAudioController getInstance(Context context, String authToken, String clientID) {
         if (instance == null) {
-            return new CustomAudioController(context, authToken, clientID);
+            instance = new CustomAudioController(context, authToken, clientID);
+            return instance;
         } else {
-            instance.player.login(authToken);
             return instance;
         }
     }
 
     public boolean play(String uri) {
-        if (!player.getPlaybackState().isPlaying) {
-            isPaused = false;
-            player.playUri(operationCallback, uri, 0, 0);
-            return true;
-        } else {
-            Log.d(TAG, "Player was already playing");
-            return false;
-        }
+        isPaused = false;
+        player.playUri(operationCallback, uri, 0, 0);
+        return true;
     }
 
     public void queueNext(String uri) {

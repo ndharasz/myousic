@@ -59,6 +59,11 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
     CustomAudioController audioControllerInstance;
 
+    // When a song is retrieved, do this action
+    private interface SongReceivedAction {
+        public void onSongReceived(QueuedSong song);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +78,9 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         currSongSetup();
     }
 
+    @Override
     protected void onStart() {
+        super.onStart();
         createPlayer();
     }
 
@@ -122,16 +129,14 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     }
 
     // Puts the next song in the nextSong variable
-    protected QueuedSong getNextSong() {
+    protected QueuedSong getNextSong(final SongReceivedAction songReceivedAction) {
         currParty.orderByChild("timestamp").limitToFirst(1)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot child : dataSnapshot.getChildren()) {
-                            nextSong = (QueuedSong) child.getValue(QueuedSong.class);
-                            Log.d(TAG, "currentSongURI = " + currentSong.getUri());
-                            currSong.setText(child.child("name").getValue().toString());
-                            currArtistAlbum.setText(child.child("artist").getValue().toString());
+                            QueuedSong song = (QueuedSong) child.getValue(QueuedSong.class);
+                            songReceivedAction.onSongReceived(song);
                         }
                     }
 
@@ -143,28 +148,31 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         return nextSong;
     }
 
+
     protected void play(View v) {
         if(!audioControllerInstance.isPaused()) {
             // if there is no song to play, fetch the song
-            if (currSong == null) {
-                currentSong = getNextSong();
-            }
-            // remove the song from table
-            removeSongFromQueue(currentSong);
-            // play the current song
-            audioControllerInstance.play(currentSong.getUri());
-            // queue the next song
-            getNextSong();
-            if (nextSong != null)
-                audioControllerInstance.queueNext(nextSong.getUri());
+            getNextSong(new SongReceivedAction() {
+                @Override
+                public void onSongReceived(QueuedSong song) {
+                    removeSongFromQueue(song);
+                    ((TextView) findViewById(R.id.song)).setText(song.getName());
+                    ((TextView) findViewById(R.id.artistAlbum)).setText(song.getArtist());
+                    play.setVisibility(View.GONE);
+                    pause.setVisibility(View.VISIBLE);
+                    audioControllerInstance.play(song.getUri());
+                }
+            });
         } else {
             // if the audio was previously paused, just resume play
             audioControllerInstance.resume();
+            play.setVisibility(View.GONE);
+            pause.setVisibility(View.VISIBLE);
         }
     }
 
     protected void pause(View v) {
-        boolean paused = audioControllerInstance.resume();
+        boolean paused = audioControllerInstance.pause();
         if (paused) {
             play.setVisibility(View.VISIBLE);
             pause.setVisibility(View.GONE);
@@ -176,9 +184,16 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     protected void next(View v) {
         // skip to the next song, update the local song list,
         // then queue next song
-        audioControllerInstance.skip();
-        currentSong = nextSong;
-        getNextSong();
-        audioControllerInstance.queueNext(nextSong.getUri());
+        getNextSong(new SongReceivedAction() {
+            @Override
+            public void onSongReceived(QueuedSong song) {
+                removeSongFromQueue(song);
+                ((TextView) findViewById(R.id.song)).setText(song.getName());
+                ((TextView) findViewById(R.id.artistAlbum)).setText(song.getArtist());
+                play.setVisibility(View.GONE);
+                pause.setVisibility(View.VISIBLE);
+                audioControllerInstance.play(song.getUri());
+            }
+        });
     }
 }
