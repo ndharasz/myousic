@@ -11,28 +11,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
 import com.myousic.util.CustomAudioController;
 import com.myousic.util.CustomChildEventListener;
-import com.spotify.sdk.android.player.Config;
-import com.spotify.sdk.android.player.Error;
-import com.spotify.sdk.android.player.PlaybackState;
-import com.spotify.sdk.android.player.Player;
-import com.spotify.sdk.android.player.PlayerEvent;
-import com.spotify.sdk.android.player.Spotify;
-import com.spotify.sdk.android.player.SpotifyPlayer;
-
-import java.net.URI;
-import java.util.Queue;
 import java.util.Random;
 
 public class ActivityPartyAdmin extends AppCompatActivity {
@@ -156,8 +144,8 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                 @Override
                 public void onSongReceived(QueuedSong song) {
                     removeSongFromQueue(song);
-                    ((TextView) findViewById(R.id.song)).setText(song.getName());
-                    ((TextView) findViewById(R.id.artistAlbum)).setText(song.getArtist());
+                    currSong.setText(song.getName());
+                    currArtistAlbum.setText(song.getArtist());
                     play.setVisibility(View.GONE);
                     pause.setVisibility(View.VISIBLE);
                     audioControllerInstance.play(song.getUri());
@@ -188,8 +176,8 @@ public class ActivityPartyAdmin extends AppCompatActivity {
             @Override
             public void onSongReceived(QueuedSong song) {
                 removeSongFromQueue(song);
-                ((TextView) findViewById(R.id.song)).setText(song.getName());
-                ((TextView) findViewById(R.id.artistAlbum)).setText(song.getArtist());
+                currSong.setText(song.getName());
+                currArtistAlbum.setText(song.getArtist());
                 play.setVisibility(View.GONE);
                 pause.setVisibility(View.VISIBLE);
                 audioControllerInstance.play(song.getUri());
