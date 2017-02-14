@@ -3,6 +3,7 @@ package com.myousic.util;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.util.Log;
 
 import com.spotify.sdk.android.player.AudioController;
 
@@ -12,6 +13,7 @@ import com.spotify.sdk.android.player.AudioController;
 
 public class CustomAudioController implements AudioController {
     private AudioTrack track = null;
+    private static final String TAG = "CustomAudioController";
 
     @Override
     public void start() {
@@ -48,6 +50,8 @@ public class CustomAudioController implements AudioController {
     public void onAudioPaused() {
         if(track != null)
             track.pause();
+        else
+            Log.d(TAG, "Audio was not playing");
     }
 
     @Override

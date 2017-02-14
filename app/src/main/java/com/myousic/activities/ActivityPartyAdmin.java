@@ -25,13 +25,17 @@ import com.myousic.util.CustomAudioController;
 import com.myousic.util.CustomChildEventListener;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.Error;
+import com.spotify.sdk.android.player.PlaybackState;
 import com.spotify.sdk.android.player.Player;
+import com.spotify.sdk.android.player.PlayerEvent;
+import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 
 import java.net.URI;
 import java.util.Random;
 
 public class ActivityPartyAdmin extends AppCompatActivity {
+    private String TAG = "ActivityPartyAdmin";
     private FirebaseDatabase db;
     DatabaseReference currParty;
     private SharedPreferences loginPrefs;
@@ -44,6 +48,21 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     TextView idField;
 
     SpotifyPlayer player;
+
+    private final Player.OperationCallback operationCallback = new Player.OperationCallback() {
+        @Override
+        public void onSuccess() {
+            Log.d(TAG, "Playing");
+            Log.d(TAG, "State: " + player.getPlaybackState().isPlaying);
+            pause.setVisibility(View.VISIBLE);
+            play.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onError(Error error) {
+            Toast.makeText(ActivityPartyAdmin.this, "Unable to play: " + error.name(), Toast.LENGTH_SHORT).show();
+        }
+    };
 
     Button play;
     Button pause;
@@ -61,14 +80,33 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         db = FirebaseDatabase.getInstance();
         loginPrefs = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         authToken = loginPrefs.getString("token", "");
+
         idSetup();
-        player = new SpotifyPlayer
-                .Builder(new Config(this, authToken, getString(R.string.clientID)))
-                .setAudioController(new CustomAudioController())
-                .build();
-        player.initialize(new Config(this, authToken, getString(R.string.clientID)));
+        createPlayer();
         buttonSetup();
         currSongSetup();
+    }
+
+    private void createPlayer() {
+        if (player == null) {
+            Log.d(TAG, "Creating player with auth token: " + authToken);
+            Log.d(TAG, "Client ID: " + getString(R.string.clientID));
+            Config playerConfig = new Config(getApplicationContext(), authToken, getString(R.string.clientID));
+            Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
+                @Override
+                public void onInitialized(SpotifyPlayer spotifyPlayer) {
+                    player = spotifyPlayer;
+                    Log.d(TAG, "Player initialized");
+                }
+
+                @Override
+                public void onError(Throwable error) {
+                    Log.d(TAG, "Error in initilzation" + error.getMessage());
+                }
+            });
+        } else {
+            player.login(authToken);
+        }
     }
 
     protected void idSetup() {
@@ -103,12 +141,14 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
     protected void play(View v) {
         if(currentSongURI == null) {
+            Log.d(TAG, "No URI string; fetch next song");
             currParty.orderByChild("timestamp").limitToFirst(1)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot child : dataSnapshot.getChildren()) {
                             currentSongURI = child.child("uri").getValue().toString();
+                            Log.d(TAG, "currentSongURI = " + currentSongURI);
                             currSong.setText(child.child("name").getValue().toString());
                             currArtistAlbum.setText(child.child("artist").getValue().toString());
                             currParty.child(child.getKey().toString()).removeValue();
@@ -120,25 +160,17 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
                     }
                 });
+            player.playUri(operationCallback, currentSongURI, 0, 0);
+        } else {
+            player.playUri(operationCallback, currentSongURI, 0, currentSongMs);
         }
-        player.playUri(new Player.OperationCallback() {
-            @Override
-            public void onSuccess() {
-                pause.setVisibility(View.VISIBLE);
-                play.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onError(Error error) {
-                Toast.makeText(ActivityPartyAdmin.this, "Unable to play: " + error.name(), Toast.LENGTH_SHORT).show();
-            }
-        }, currentSongURI, 0, currentSongMs);
     }
 
     protected void pause(View v) {
         player.pause(new Player.OperationCallback() {
             @Override
             public void onSuccess() {
+                Log.d(TAG, "Song paused");
                 currentSongMs = (int)player.getPlaybackState().positionMs;
                 play.setVisibility(View.VISIBLE);
                 pause.setVisibility(View.GONE);
