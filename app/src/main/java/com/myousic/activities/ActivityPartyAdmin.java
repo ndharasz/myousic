@@ -21,6 +21,8 @@ import com.myousic.R;
 import com.myousic.models.QueuedSong;
 import com.myousic.util.CustomAudioController;
 import com.myousic.util.CustomChildEventListener;
+import com.myousic.util.NowPlayingEventListener;
+
 import java.util.Random;
 
 public class ActivityPartyAdmin extends AppCompatActivity {
@@ -108,12 +110,19 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         currImg = (ImageView)findViewById(R.id.image);
         currSong = (TextView)findViewById(R.id.song);
         currArtistAlbum = (TextView)findViewById(R.id.artistAlbum);
+        currParty.addChildEventListener(new NowPlayingEventListener(ActivityPartyAdmin.this,
+                currImg, currSong, currArtistAlbum));
     }
 
     protected void removeSongFromQueue(QueuedSong song) {
         // We should add this song to a "Currently playing" table in the database
         // so that other apps can see the current song
         currParty.child(Long.toString(song.getTimestamp())).removeValue();
+    }
+
+    protected void addSongToNowPlaying(QueuedSong song) {
+        song.setTimestamp(Long.MAX_VALUE);
+        currParty.child("current").setValue(song);
     }
 
     // Puts the next song in the nextSong variable
@@ -144,8 +153,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                 @Override
                 public void onSongReceived(QueuedSong song) {
                     removeSongFromQueue(song);
-                    currSong.setText(song.getName());
-                    currArtistAlbum.setText(song.getArtist());
+                    addSongToNowPlaying(song);
                     play.setVisibility(View.GONE);
                     pause.setVisibility(View.VISIBLE);
                     audioControllerInstance.play(song.getUri());
@@ -176,8 +184,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
             @Override
             public void onSongReceived(QueuedSong song) {
                 removeSongFromQueue(song);
-                currSong.setText(song.getName());
-                currArtistAlbum.setText(song.getArtist());
+                addSongToNowPlaying(song);
                 play.setVisibility(View.GONE);
                 pause.setVisibility(View.VISIBLE);
                 audioControllerInstance.play(song.getUri());

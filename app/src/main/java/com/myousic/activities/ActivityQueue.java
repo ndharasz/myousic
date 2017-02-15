@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
 import com.myousic.util.CustomChildEventListener;
+import com.myousic.util.NowPlayingEventListener;
 
 import static com.myousic.R.layout.layout_queue_row;
 
@@ -26,12 +28,19 @@ public class ActivityQueue extends AppCompatActivity {
     private String TAG = "ActivityQueue";
     protected TableLayout tableLayout;
 
+    private ImageView artistImage;
+    private TextView songView;
+    private TextView artistAlbumView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
 
         tableLayout = (TableLayout) findViewById(R.id.queue_table);
+        artistImage = (ImageView) findViewById(R.id.image);
+        songView = (TextView) findViewById(R.id.song);
+        artistAlbumView = (TextView) findViewById(R.id.artistAlbum);
 
         String partyID = getSharedPreferences("Party", Context.MODE_PRIVATE).getString("party_id", null);
         if (partyID == null) {
@@ -43,6 +52,7 @@ public class ActivityQueue extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference("parties").child(partyID);
         databaseReference.addChildEventListener(new CustomChildEventListener(tableLayout, this));
+        databaseReference.addChildEventListener(new NowPlayingEventListener(this, artistImage, songView, artistAlbumView));
     }
 
     protected void addSong(View v) {

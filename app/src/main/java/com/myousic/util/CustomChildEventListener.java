@@ -33,6 +33,9 @@ public class CustomChildEventListener implements ChildEventListener {
 
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        if (dataSnapshot.getKey().equals("current")) {
+            return;
+        }
         QueuedSong result = (QueuedSong) dataSnapshot.getValue(QueuedSong.class);
         Log.d(TAG, "Song added: " + result.getName());
         TableRow row = (TableRow) LayoutInflater.from(context)
@@ -50,6 +53,9 @@ public class CustomChildEventListener implements ChildEventListener {
 
     @Override
     public void onChildRemoved(DataSnapshot dataSnapshot) {
+        if (dataSnapshot.getKey().equals("current")) {
+            return;
+        }
         String removedSong = (String) dataSnapshot.child("name").getValue();
         for(int x = 0; x < tableLayout.getChildCount(); x++) {
             TableRow song = (TableRow) tableLayout.getChildAt(x);
