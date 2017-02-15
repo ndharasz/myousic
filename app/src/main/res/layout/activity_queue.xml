@@ -66,7 +66,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_marginTop="@dimen/activity_vertical_margin">
@@ -75,27 +74,32 @@
             android:id="@+id/image"
             android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:layout_weight="4"/>
+            android:layout_weight="4"
+/>
 
-        <TextView
-            android:id="@+id/song"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:textSize="@dimen/table_text"
-            android:textColor="@color/colorAccent"
-            android:ellipsize="end"
-            android:singleLine="true"/>
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/song"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/table_text"
+                android:textColor="@color/colorPrimaryDark"
+                android:ellipsize="end"
+                android:singleLine="true"/>
 
-        <TextView
-            android:id="@+id/artistAlbum"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:textSize="@dimen/table_text_small"
-            android:textColor="@color/colorAccent"
-            android:ellipsize="end"
-            android:singleLine="true"/>
+            <TextView
+                android:id="@+id/artistAlbum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/table_text_small"
+                android:textColor="@color/colorPrimaryDark"
+                android:ellipsize="end"
+                android:singleLine="true"/>
+        </LinearLayout>
 
     </LinearLayout>
 
