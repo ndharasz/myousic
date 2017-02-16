@@ -85,7 +85,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         currParty.addChildEventListener(new CustomChildEventListener(
                 (TableLayout)findViewById(R.id.queue_table), this));
         idField = (TextView)findViewById(R.id.party_id_field);
-        idField.setText("Party ID: "+id);
+        idField.setText(id);
     }
 
     private void createPlayer() {

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -14,6 +15,8 @@ import com.google.firebase.database.DatabaseError;
 import com.myousic.R;
 import com.myousic.activities.ActivityQueue;
 import com.myousic.models.QueuedSong;
+
+import org.w3c.dom.Text;
 
 import static com.myousic.R.layout.layout_queue_row;
 
@@ -59,7 +62,8 @@ public class CustomChildEventListener implements ChildEventListener {
         String removedSong = (String) dataSnapshot.child("name").getValue();
         for(int x = 0; x < tableLayout.getChildCount(); x++) {
             TableRow song = (TableRow) tableLayout.getChildAt(x);
-            String name = ((TextView) song.getChildAt(0)).getText().toString();
+            LinearLayout layout = ((LinearLayout) song.getChildAt(0));
+            String name = ((TextView) layout.getChildAt(0)).getText().toString();
             if(name.equals(removedSong)) {
                 tableLayout.removeView(song);
                 break;
