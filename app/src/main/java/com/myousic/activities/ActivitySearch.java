@@ -15,9 +15,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
-import com.myousic.models.SearchResult;
+import com.myousic.models.Song;
 import com.myousic.models.WebAPIWrapper;
-import com.myousic.widgets.ResultRow;
+import com.myousic.widgets.WidgetSongRow;
 
 import java.util.List;
 
@@ -34,16 +34,10 @@ public class ActivitySearch extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
-        searchView = (SearchView) findViewById(R.id.search);
         tableLayout = (TableLayout) findViewById(R.id.result_table);
 
-        searchView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchView.setIconified(false);
-            }
-        });
+        searchView = (SearchView) findViewById(R.id.search);
+        searchView.setIconified(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -63,14 +57,20 @@ public class ActivitySearch extends AppCompatActivity {
         WebAPIWrapper webAPIWrapper = WebAPIWrapper.getInstance(this);
         webAPIWrapper.search(query, TRACK, new WebAPIWrapper.SearchResultResponseListener() {
             @Override
-            public void onResponse(List<SearchResult> searchResults) {
-                for (SearchResult result : searchResults) {
-                    ResultRow row = (ResultRow) LayoutInflater.from(ActivitySearch.this)
-                            .inflate(R.layout.layout_search_row, null);
-                    row.setSearchResult(result);
-                    ((TextView)row.findViewById(R.id.result_value)).setText(result.getSong());
-                    ((TextView)row.findViewById(R.id.result_type)).setText(result.getArtist());
-                    tableLayout.addView(row);
+            public void onResponse(List<Song> songs) {
+                for (Song result : songs) {
+                    WidgetSongRow songRow = (WidgetSongRow) LayoutInflater.from(ActivitySearch.this)
+                            .inflate(R.layout.layout_song_row, null);
+                    songRow.setSong(result);
+                    songRow.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            addSong(v);
+                        }
+                    });
+                    ((TextView)songRow.findViewById(R.id.song_name)).setText(result.getName());
+                    ((TextView)songRow.findViewById(R.id.song_artist)).setText(result.getArtist());
+                    tableLayout.addView(songRow);
                 }
             }
         });
@@ -82,8 +82,8 @@ public class ActivitySearch extends AppCompatActivity {
             Log.d(TAG, "Preferences not set");
             return;
         } try {
-            ResultRow resultRow = (ResultRow) v;
-            QueuedSong queuedSong = new QueuedSong(resultRow.getSearchResult());
+            WidgetSongRow widgetSongRow = (WidgetSongRow) v;
+            QueuedSong queuedSong = new QueuedSong(widgetSongRow.getSong());
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference databaseReference = database.getReference("parties/").child(partyID)
                     .child(Long.toString(queuedSong.getTimestamp()));

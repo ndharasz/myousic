@@ -13,7 +13,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +24,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-
-import static android.R.attr.value;
 
 /**
  * Created by brian on 2/12/17.
@@ -41,11 +38,11 @@ public class WebAPIWrapper {
     private static String TAG = "WebAPIWrapper";
 
     public interface SearchResultResponseListener {
-        public void onResponse(List<SearchResult> searchResult);
+        void onResponse(List<Song> song);
     }
 
     public interface AlbumCoverListener {
-        public void onResponse(Bitmap bitmap);
+        void onResponse(Bitmap bitmap);
     }
 
     private class RetrieveAlbumTask extends AsyncTask<String, Void, Bitmap> {
@@ -96,15 +93,15 @@ public class WebAPIWrapper {
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray jsonArray = response.getJSONObject("tracks").getJSONArray("items");
-                    List<SearchResult> searchResults = new LinkedList<>();
+                    List<Song> songs = new LinkedList<>();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         String song = jsonArray.getJSONObject(i).getString("name");
                         String artist = jsonArray.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
                         String album = jsonArray.getJSONObject(i).getJSONObject("album").getString("name");
                         String uri = jsonArray.getJSONObject(i).getString("uri");
-                        searchResults.add(new SearchResult(song, artist, album, uri));
+                        songs.add(new Song(song, artist, album, uri));
                     }
-                    searchResultResponseListener.onResponse(searchResults);
+                    searchResultResponseListener.onResponse(songs);
                 } catch (JSONException e) {
                     Log.d(TAG, "Search response unsuccessful");
                 }
