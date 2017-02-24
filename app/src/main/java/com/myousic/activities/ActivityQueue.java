@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.myousic.R;
 import com.myousic.util.CustomQueueEventListener;
 import com.myousic.util.NowPlayingEventListener;
+import com.myousic.widgets.WidgetSongRow;
 
 public class ActivityQueue extends AppCompatActivity {
     private String TAG = "ActivityQueue";
@@ -29,7 +30,7 @@ public class ActivityQueue extends AppCompatActivity {
         setContentView(R.layout.activity_queue);
 
         queueLayout = (TableLayout) findViewById(R.id.queue_table);
-        currSongWrapper = (RelativeLayout)findViewById(R.id.curr_song_wrapper);
+        RelativeLayout songWrapper = (RelativeLayout) findViewById(R.id.now_playing);
 
         //get party id from shared prefs
         String partyID = getSharedPreferences("Party", Context.MODE_PRIVATE).getString("party_id", null);
@@ -48,7 +49,7 @@ public class ActivityQueue extends AppCompatActivity {
         databaseReference.addChildEventListener(new CustomQueueEventListener(this, queueLayout));
 
         //!! change this so that now playing only takes full song view and this
-        databaseReference.addChildEventListener(new NowPlayingEventListener(this, currSongWrapper));
+        databaseReference.addChildEventListener(new NowPlayingEventListener(this, songWrapper));
     }
 
     protected void addSong(View v) {

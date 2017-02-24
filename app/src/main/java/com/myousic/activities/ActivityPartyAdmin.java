@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import com.myousic.models.Song;
 import com.myousic.util.CustomAudioController;
 import com.myousic.util.CustomQueueEventListener;
 import com.myousic.util.NowPlayingEventListener;
+import com.myousic.widgets.WidgetSongRow;
 
 import java.util.Queue;
 import java.util.Random;
@@ -66,6 +68,12 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         createPlayer();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        audioControllerInstance.destroy();
     }
 
     protected void idSetup() {
@@ -114,8 +122,8 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     }
 
     protected void currSongSetup() {
-        currSongWrapper = (RelativeLayout)findViewById(R.id.curr_song_wrapper);
-        currParty.addChildEventListener(new NowPlayingEventListener(this, currSongWrapper));
+        RelativeLayout songWrapper = (RelativeLayout) findViewById(R.id.now_playing);
+        currParty.addChildEventListener(new NowPlayingEventListener(this, songWrapper));
     }
 
     public void addSong(View v) {
@@ -135,7 +143,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                         currParty.child(String.valueOf(song.getTimestamp())).removeValue();
                         song.setTimestamp(Long.MAX_VALUE);
                         currParty.child("current").setValue(song);
-                        play.setVisibility(View.INVISIBLE);
+                        play.setVisibility(View.GONE);
                         pause.setVisibility(View.VISIBLE);
                     }
                 });
@@ -145,7 +153,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
             }
         } else {
             audioControllerInstance.resume();
-            play.setVisibility(View.INVISIBLE);
+            play.setVisibility(View.GONE);
             pause.setVisibility(View.VISIBLE);
         }
     }

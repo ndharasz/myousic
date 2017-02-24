@@ -137,4 +137,8 @@ public class CustomAudioController {
     public boolean isPaused() {
         return isPaused;
     }
+
+    public void destroy() {
+        player.destroy();
+    }
 }
