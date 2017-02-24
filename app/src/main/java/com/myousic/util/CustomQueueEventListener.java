@@ -15,6 +15,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
+import com.myousic.widgets.WidgetSongRow;
+
+import java.util.Queue;
 
 import static com.myousic.R.layout.layout_song_row;
 
@@ -39,10 +42,11 @@ public class CustomQueueEventListener implements ChildEventListener {
         }
         QueuedSong result = (QueuedSong) dataSnapshot.getValue(QueuedSong.class);
         Log.d(TAG, "Song added: " + result.getName());
-        TableRow row = (TableRow) LayoutInflater.from(context)
+        WidgetSongRow row = (WidgetSongRow) LayoutInflater.from(context)
                 .inflate(layout_song_row, null);
         ((TextView)row.findViewById(R.id.song_name)).setText(result.getName());
         ((TextView)row.findViewById(R.id.song_artist)).setText(result.getArtist());
+        row.setSong(result);
         tableLayout.addView(row);
         tableLayout.invalidate();
     }
@@ -78,5 +82,13 @@ public class CustomQueueEventListener implements ChildEventListener {
     @Override
     public void onCancelled(DatabaseError databaseError) {
         Log.d(TAG, "Unexpected behavior");
+    }
+
+    // gets the next song in the queue
+    public QueuedSong getNextSong() {
+        if (tableLayout.getChildCount() == 0) {
+            return null;
+        }
+        return (QueuedSong) ((WidgetSongRow) tableLayout.getChildAt(0)).getSong();
     }
 }

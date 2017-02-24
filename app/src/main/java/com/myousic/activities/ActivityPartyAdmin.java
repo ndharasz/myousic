@@ -21,10 +21,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
+import com.myousic.models.Song;
 import com.myousic.util.CustomAudioController;
 import com.myousic.util.CustomQueueEventListener;
 import com.myousic.util.NowPlayingEventListener;
 
+import java.util.Queue;
 import java.util.Random;
 
 public class ActivityPartyAdmin extends AppCompatActivity {
@@ -42,6 +44,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     RelativeLayout currSongWrapper;
 
     CustomAudioController audioControllerInstance;
+    CustomQueueEventListener customQueueEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,9 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
         db = FirebaseDatabase.getInstance();
         authToken = getSharedPreferences("loginPrefs", MODE_PRIVATE).getString("token", "");
+
+        customQueueEventListener = new CustomQueueEventListener(this,
+                (TableLayout) findViewById(R.id.queue_table));
 
         idSetup();
         buttonSetup();
@@ -73,15 +79,14 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         //store in db
         db.getReference().child("parties").child(id).setValue("");
         currParty = db.getReference().child("parties").child(id).getRef();
-        currParty.addChildEventListener(new CustomQueueEventListener(this,
-                (TableLayout)findViewById(R.id.queue_table)));
+        currParty.addChildEventListener(customQueueEventListener);
         idField = (TextView)findViewById(R.id.party_id_field);
         idField.setText(id);
     }
 
     private void createPlayer() {
-        audioControllerInstance = new CustomAudioController(this,
-                authToken, getString(R.string.clientID), currParty);
+        audioControllerInstance = CustomAudioController.getInstance(this,
+                authToken, getString(R.string.clientID));
     }
 
     protected void buttonSetup() {
@@ -119,15 +124,29 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         startActivity(searchIntent);
     }
 
-
     public void play() {
-        Log.d(TAG, "should hit this");
-        boolean playing = audioControllerInstance.play();
-        if(playing) {
-            play.setVisibility(View.GONE);
-            pause.setVisibility(View.VISIBLE);
+        if (!audioControllerInstance.isPaused()) {
+            QueuedSong nextSong = getNextSong();
+            if (nextSong != null) {
+                Log.d(TAG, "Song: " + nextSong.getName());
+                audioControllerInstance.play(nextSong, new CustomAudioController.SongPlayingListener() {
+                    @Override
+                    public void onPlaying(QueuedSong song) {
+                        currParty.child(String.valueOf(song.getTimestamp())).removeValue();
+                        song.setTimestamp(Long.MAX_VALUE);
+                        currParty.child("current").setValue(song);
+                        play.setVisibility(View.INVISIBLE);
+                        pause.setVisibility(View.VISIBLE);
+                    }
+                });
+            } else {
+                Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
+                return;
+            }
         } else {
-            Log.d(TAG, "Song was not able to be played");
+            audioControllerInstance.resume();
+            play.setVisibility(View.INVISIBLE);
+            pause.setVisibility(View.VISIBLE);
         }
     }
 
@@ -142,6 +161,25 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     }
 
     public void next() {
-        audioControllerInstance.next();
+        QueuedSong nextSong = getNextSong();
+        if (nextSong != null) {
+            audioControllerInstance.next(nextSong, new CustomAudioController.SongPlayingListener() {
+                @Override
+                public void onPlaying(QueuedSong song) {
+                    currParty.child(String.valueOf(song.getTimestamp())).removeValue();
+                    song.setTimestamp(Long.MAX_VALUE);
+                    currParty.child("current").setValue(song);
+                    play.setVisibility(View.GONE);
+                    pause.setVisibility(View.VISIBLE);
+                }
+            });
+        } else {
+            Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
+
+    private QueuedSong getNextSong() {
+        return customQueueEventListener.getNextSong();
     }
 }

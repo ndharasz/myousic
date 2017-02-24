@@ -15,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
+import com.myousic.models.Song;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.Error;
 import com.spotify.sdk.android.player.Player;
@@ -25,14 +26,15 @@ import java.util.Queue;
 
 public class CustomAudioController {
     private static final String TAG = "CustomAudioController";
+    private static CustomAudioController instance;
 
     private SpotifyPlayer player;
-    private DatabaseReference partyDB;
-    private QueuedSong currentSong;
-    private int currSongMs;
-    private QueuedSong nextSong;
 
-    private boolean isPaused;
+    private boolean isPaused = false;
+
+    public interface SongPlayingListener {
+        public void onPlaying(QueuedSong song);
+    }
 
     //Basic callback for logging events
     private final Player.OperationCallback operationCallback = new Player.OperationCallback() {
@@ -47,10 +49,8 @@ public class CustomAudioController {
         }
     };
 
-    //Cunstructor for setting up party Database and spotify player
-    public CustomAudioController(Context context, String authToken, String clientID,
-                                 DatabaseReference partyDB) {
-        this.partyDB = partyDB;
+    //Constructor for setting up party Database and spotify player
+    private CustomAudioController(Context context, String authToken, String clientID) {
         Config playerConfig = new Config(context, authToken, clientID);
         Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
             @Override
@@ -66,63 +66,67 @@ public class CustomAudioController {
         });
     }
 
-    public boolean play() {
-        //Edge-case: First song on queue playing
-        if(currentSong == null) {
-            //Get first two songs based on timestamp
-            partyDB.orderByChild("timestamp").limitToFirst(2)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //loop through two songs
-                        for(DataSnapshot child : dataSnapshot.getChildren()) {
-                            Log.d(TAG, child.toString());
-                            //first song should set to current
-                            //Second song set to next
-                            if(currentSong == null) {
-                                currentSong = child.getValue(QueuedSong.class);
-                            } else {
-                                nextSong = child.getValue(QueuedSong.class);
-                            }
-                            //if queue not empty
-                            if(currentSong != null) {
-                                //remove current song from queue
-                                partyDB.child(Long.toString(currentSong.getTimestamp())).removeValue()
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                //When removal is complete, play current song
-                                                player.playUri(operationCallback, currentSong.getUri(), 0, 0);
-                                                //Set current song
-                                                partyDB.child("current").setValue(currentSong);
-                                            }
-                                        });
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-        } else if(!isPaused) {
-            //if it's already playing, do nothing
-            return false;
+    public static CustomAudioController getInstance(Context context, String authToken, String clientID) {
+        if (instance == null) {
+            return new CustomAudioController(context, authToken, clientID);
         } else {
-            //if a current osng is pause, resum
-            player.resume(operationCallback);
+            return instance;
         }
-        //switch boolean and return positive
-        isPaused = false;
+    }
+
+    // Takes in a song and plays it
+    public boolean play(final QueuedSong song, final SongPlayingListener onSongPlayingListener) {
+        if (!player.getPlaybackState().isPlaying) {
+            isPaused = false;
+            player.playUri(new Player.OperationCallback() {
+                @Override
+                public void onSuccess() {
+                    onSongPlayingListener.onPlaying(song);
+                }
+
+                @Override
+                public void onError(Error error) {
+
+                }
+            }, song.getUri(), 0, 0);
+            return true;
+        } else {
+            Log.d(TAG, "Player was already playing");
+            return false;
+        }
+    }
+
+    public boolean next(final QueuedSong song, final SongPlayingListener onSongPlayingListener) {
+        player.playUri(new Player.OperationCallback() {
+            @Override
+            public void onSuccess() {
+                onSongPlayingListener.onPlaying(song);
+            }
+
+            @Override
+            public void onError(Error error) {
+
+            }
+        }, song.getUri(), 0, 0);
         return true;
+    }
+
+    public boolean resume() {
+        if (!player.getPlaybackState().isPlaying) {
+            isPaused = false;
+            player.resume(operationCallback);
+            return true;
+        } else {
+            Log.d(TAG, "Player was already playing");
+            return false;
+        }
     }
 
     public boolean pause() {
         //if playing then pause, otherwise it was already paused
         if (player.getPlaybackState().isPlaying) {
-            isPaused = true;
             player.pause(operationCallback);
+            isPaused = true;
             return true;
         } else {
             Log.d(TAG, "Player was already paused");
@@ -130,40 +134,7 @@ public class CustomAudioController {
         }
     }
 
-    public boolean next() {
-        //Edge-case: last song on list
-        if(nextSong == null) {
-            return false;
-        }
-        //Move to next song
-        currentSong = nextSong;
-        Log.d("Current Song", currentSong.getName());
-        //remove current song from DB
-        partyDB.child(Long.toString(currentSong.getTimestamp())).removeValue()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        //When removal complete, play current song
-                        player.playUri(operationCallback, currentSong.getUri(), 0, 0);
-                        //Set current song in DB
-                        partyDB.child("current").setValue(currentSong);
-                            //set next song variable to next song in queue
-                        partyDB.orderByChild("timestamp").limitToFirst(1)
-                                .addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                            nextSong = child.getValue(QueuedSong.class);
-                                            Log.d("Next Song", child.toString());
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                    }
-                                });
-                    }
-                });
-        return true;
+    public boolean isPaused() {
+        return isPaused;
     }
 }
