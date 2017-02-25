@@ -2,11 +2,14 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="title_1">16pt</dimen>
+    <dimen name="title_1">12pt</dimen>
     <dimen name="big_button_text">10pt</dimen>
     <dimen name="text_box_padding">10dp</dimen>
     <dimen name="table_margin">8dp</dimen>
     <dimen name="table_header">10pt</dimen>
-    <dimen name="table_text">10pt</dimen>
+    <dimen name="table_text">9pt</dimen>
     <dimen name="table_text_small">6pt</dimen>
+    <dimen name="queue_table_text">8pt</dimen>
+    <dimen name="queue_padding">8dp</dimen>
+    <dimen name="now_playing_padding">10dp</dimen>
 </resources>

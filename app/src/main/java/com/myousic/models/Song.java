@@ -9,7 +9,7 @@ import java.util.List;
  * Created by brian on 2/12/17.
  */
 
-public class SearchResult {
+public class Song {
 
     private String song;
     private String artist;
@@ -17,18 +17,20 @@ public class SearchResult {
     private String imageurl;
     private String uri;
 
-    public SearchResult(String song, String artist, String album, String uri) {
+    public Song(){};
+
+    public Song(String song, String artist, String album, String uri) {
         this.song = song;
         this.artist = artist;
         this.album = album;
         this.uri = uri;
     }
 
-    public String getSong() {
+    public String getName() {
         return song;
     }
 
-    public void setSong(String song) {
+    public void setName(String song) {
         this.song = song;
     }
 

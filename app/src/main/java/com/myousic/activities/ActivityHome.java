@@ -22,19 +22,9 @@ public class ActivityHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        //init shared preferences file/editor for login info
         loginPrefs = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginEdit = loginPrefs.edit();
-    }
-
-    protected void create(View v) {
-        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(
-                getString(R.string.clientID), AuthenticationResponse.Type.TOKEN,
-                "myousic://callback");
-        builder.setScopes(new String[]{"streaming"});
-        AuthenticationRequest request = builder.build();
-
-        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
     }
 
     protected void join(View v) {
@@ -42,13 +32,27 @@ public class ActivityHome extends AppCompatActivity {
         startActivity(joinPartyIntent);
     }
 
+    protected void create(View v) {
+        //Create Spotify authentication request
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(
+                getString(R.string.clientID), AuthenticationResponse.Type.TOKEN,
+                "myousic://callback");
+        builder.setScopes(new String[]{"streaming"});
+        AuthenticationRequest request = builder.build();
+        //open Spotify login activity
+        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+        //if successful
         if (requestCode == REQUEST_CODE) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             switch (response.getType()) {
                 case TOKEN:
+                    //if authentication token is in response, put it in the shared
+                    //preference file and start the next activity
                     String token = response.getAccessToken();
                     loginEdit.putString("token", token);
                     loginEdit.commit();
@@ -56,6 +60,7 @@ public class ActivityHome extends AppCompatActivity {
                     startActivity(partyAdminIntent);
                     break;
                 case ERROR:
+                    //else let the user know it couldnt authenticate
                     Toast.makeText(this, "Authentication Failed", Toast.LENGTH_SHORT).show();
                     break;
             }

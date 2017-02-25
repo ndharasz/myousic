@@ -1,9 +1,11 @@
 package com.myousic.util;
 
-import android.app.Activity;
 import android.content.Context;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -12,21 +14,23 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.myousic.R;
-import com.myousic.activities.ActivityQueue;
 import com.myousic.models.QueuedSong;
+import com.myousic.widgets.WidgetSongRow;
 
-import static com.myousic.R.layout.layout_queue_row;
+import java.util.Queue;
+
+import static com.myousic.R.layout.layout_song_row;
 
 /**
  * Created by ndharasz on 2/13/2017.
  */
 
-public class CustomChildEventListener implements ChildEventListener {
+public class CustomQueueEventListener implements ChildEventListener {
     private String TAG = "ChildEventListener";
     TableLayout tableLayout;
     Context context;
 
-    public CustomChildEventListener(TableLayout tableLayout, Context context) {
+    public CustomQueueEventListener(Context context, TableLayout tableLayout) {
         this.tableLayout = tableLayout;
         this.context = context;
     }
@@ -38,10 +42,11 @@ public class CustomChildEventListener implements ChildEventListener {
         }
         QueuedSong result = (QueuedSong) dataSnapshot.getValue(QueuedSong.class);
         Log.d(TAG, "Song added: " + result.getName());
-        TableRow row = (TableRow) LayoutInflater.from(context)
-                .inflate(layout_queue_row, null);
+        WidgetSongRow row = (WidgetSongRow) LayoutInflater.from(context)
+                .inflate(layout_song_row, null);
         ((TextView)row.findViewById(R.id.song_name)).setText(result.getName());
-        ((TextView)row.findViewById(R.id.artist_name)).setText(result.getArtist());
+        ((TextView)row.findViewById(R.id.song_artist)).setText(result.getArtist());
+        row.setSong(result);
         tableLayout.addView(row);
         tableLayout.invalidate();
     }
@@ -59,7 +64,8 @@ public class CustomChildEventListener implements ChildEventListener {
         String removedSong = (String) dataSnapshot.child("name").getValue();
         for(int x = 0; x < tableLayout.getChildCount(); x++) {
             TableRow song = (TableRow) tableLayout.getChildAt(x);
-            String name = ((TextView) song.getChildAt(0)).getText().toString();
+            LinearLayout layout = ((LinearLayout) song.getChildAt(1));
+            String name = ((TextView) layout.getChildAt(0)).getText().toString();
             if(name.equals(removedSong)) {
                 tableLayout.removeView(song);
                 break;
@@ -76,5 +82,13 @@ public class CustomChildEventListener implements ChildEventListener {
     @Override
     public void onCancelled(DatabaseError databaseError) {
         Log.d(TAG, "Unexpected behavior");
+    }
+
+    // gets the next song in the queue
+    public QueuedSong getNextSong() {
+        if (tableLayout.getChildCount() == 0) {
+            return null;
+        }
+        return (QueuedSong) ((WidgetSongRow) tableLayout.getChildAt(0)).getSong();
     }
 }

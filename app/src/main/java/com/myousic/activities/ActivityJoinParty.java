@@ -29,15 +29,17 @@ public class ActivityJoinParty extends AppCompatActivity {
     }
 
     protected void join(View v) {
+        //get input part id field and check db for it
         final String id = partyIDField.getText().toString();
         db.getReference().child("parties").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("DB", dataSnapshot.toString());
                 if(dataSnapshot.hasChild(id)) {
+                    //if id exists in db then save it to shared prefs
                     SharedPreferences.Editor editor = getSharedPreferences("Party", Context.MODE_PRIVATE).edit();
                     editor.putString("party_id", id);
                     editor.commit();
+                    //start Activity Queue
                     Intent queueIntent = new Intent(ActivityJoinParty.this, ActivityQueue.class);
                     startActivity(queueIntent);
                 } else {
