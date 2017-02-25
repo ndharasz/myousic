@@ -22,8 +22,6 @@ public class ActivityQueue extends AppCompatActivity {
     private String TAG = "ActivityQueue";
     protected TableLayout queueLayout;
 
-    private RelativeLayout currSongWrapper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

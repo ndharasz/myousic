@@ -43,8 +43,6 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     Button pause;
     Button next;
 
-    RelativeLayout currSongWrapper;
-
     CustomAudioController audioControllerInstance;
     CustomQueueEventListener customQueueEventListener;
 
@@ -93,8 +91,23 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     }
 
     private void createPlayer() {
+        // This call gets an instance of the CustomAudioController ONLY
         audioControllerInstance = CustomAudioController.getInstance(this,
                 authToken, getString(R.string.clientID));
+        // This call initializes the player. Only when it's initialized can we set
+        //      any listeners we might need for the player.
+        audioControllerInstance.initialize(new CustomAudioController.OnInitializedListener() {
+            @Override
+            public void onInitialized() {
+                audioControllerInstance.addOnSongFinished(
+                        new CustomAudioController.SongFinishedListener() {
+                            @Override
+                            public void onSongFinished() {
+                                play();
+                            }
+                        });
+            }
+        });
     }
 
     protected void buttonSetup() {
