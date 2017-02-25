@@ -19,6 +19,7 @@ import com.myousic.models.Song;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.Error;
 import com.spotify.sdk.android.player.Player;
+import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 
@@ -29,11 +30,20 @@ public class CustomAudioController {
     private static CustomAudioController instance;
 
     private SpotifyPlayer player;
+    private Config playerConfig;
 
     private boolean isPaused = false;
 
     public interface SongPlayingListener {
         public void onPlaying(QueuedSong song);
+    }
+
+    public interface SongFinishedListener {
+        public void onSongFinished();
+    }
+
+    public interface OnInitializedListener {
+        public void onInitialized();
     }
 
     //Basic callback for logging events
@@ -51,19 +61,7 @@ public class CustomAudioController {
 
     //Constructor for setting up party Database and spotify player
     private CustomAudioController(Context context, String authToken, String clientID) {
-        Config playerConfig = new Config(context, authToken, clientID);
-        Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
-            @Override
-            public void onInitialized(SpotifyPlayer spotifyPlayer) {
-                player = spotifyPlayer;
-                Log.d(TAG, "Player initialized");
-            }
-
-            @Override
-            public void onError(Throwable error) {
-                Log.d(TAG, "Error in initialization " + error);
-            }
-        });
+        playerConfig = new Config(context, authToken, clientID);
     }
 
     public static CustomAudioController getInstance(Context context, String authToken, String clientID) {
@@ -72,6 +70,22 @@ public class CustomAudioController {
         } else {
             return instance;
         }
+    }
+
+    public void initialize(final OnInitializedListener onInitializedListener) {
+        Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
+            @Override
+            public void onInitialized(SpotifyPlayer spotifyPlayer) {
+                player = spotifyPlayer;
+                Log.d(TAG, "Player initialized");
+                onInitializedListener.onInitialized();
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                Log.d(TAG, "Error in initialization " + error);
+            }
+        });
     }
 
     // Takes in a song and plays it
@@ -132,6 +146,23 @@ public class CustomAudioController {
             Log.d(TAG, "Player was already paused");
             return false;
         }
+    }
+
+    public void addOnSongFinished(final SongFinishedListener songFinishedListener) {
+        player.addNotificationCallback(new Player.NotificationCallback() {
+            @Override
+            public void onPlaybackEvent(PlayerEvent playerEvent) {
+                if (playerEvent == PlayerEvent.kSpPlaybackNotifyAudioDeliveryDone) {
+                    isPaused = false;
+                    songFinishedListener.onSongFinished();
+                }
+            }
+
+            @Override
+            public void onPlaybackError(Error error) {
+
+            }
+        });
     }
 
     public boolean isPaused() {

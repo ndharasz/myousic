@@ -82,9 +82,13 @@ public class WebAPIWrapper {
         this.queue = Volley.newRequestQueue(context.getApplicationContext());
     }
 
+    // This needs to take in a functional interface because this thread is non-blocking.
     public void search(String query, String type, final SearchResultResponseListener searchResultResponseListener) {
         Log.d(TAG, "Initiating request");
-        // Sanitize query!
+        // Maybe better sanitation should happen
+        if (query.contains("&")) {
+            return;
+        }
         String url = "https://api.spotify.com/v1/search?q=" + query.replaceAll(" ", "%20") + "&type=" + type;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
