@@ -14,7 +14,6 @@ public class Song {
     private String song;
     private String artist;
     private String album;
-    private String imageurl;
     private String uri;
 
     public Song(){};
@@ -48,14 +47,6 @@ public class Song {
 
     public void setAlbum(String album) {
         this.album = album;
-    }
-
-    public String getImageurl() {
-        return imageurl;
-    }
-
-    public void setImageurl(String imageurl) {
-        this.imageurl = imageurl;
     }
 
     public String getUri() {

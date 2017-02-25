@@ -1,5 +1,9 @@
 package com.myousic.models;
 
+
+import android.graphics.Bitmap;
+import android.util.Log;
+
 /**
  * Created by brian on 2/12/17.
  *

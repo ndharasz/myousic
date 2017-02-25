@@ -1,6 +1,7 @@
 package com.myousic.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
+import com.myousic.models.WebAPIWrapper;
 import com.myousic.widgets.WidgetSongRow;
 
 import java.util.Queue;
@@ -40,15 +42,23 @@ public class CustomQueueEventListener implements ChildEventListener {
         if (dataSnapshot.getKey().equals("current")) {
             return;
         }
-        QueuedSong result = (QueuedSong) dataSnapshot.getValue(QueuedSong.class);
-        Log.d(TAG, "Song added: " + result.getName());
-        WidgetSongRow row = (WidgetSongRow) LayoutInflater.from(context)
+        final QueuedSong result = dataSnapshot.getValue(QueuedSong.class);
+        final WidgetSongRow row = (WidgetSongRow) LayoutInflater.from(context)
                 .inflate(layout_song_row, null);
+        row.setSong(result);
         ((TextView)row.findViewById(R.id.song_name)).setText(result.getName());
         ((TextView)row.findViewById(R.id.song_artist)).setText(result.getArtist());
-        row.setSong(result);
-        tableLayout.addView(row);
-        tableLayout.invalidate();
+        WebAPIWrapper.getInstance(context).getAlbumCover(result.getUri()  ,
+                new WebAPIWrapper.AlbumCoverListener() {
+                    @Override
+                    public void onResponse(Bitmap bitmap) {
+                        Log.d(TAG, "Setting bitmap now!");
+                        ((ImageView)row.findViewById(R.id.song_image)).setImageBitmap(bitmap);
+                        tableLayout.addView(row);
+                        tableLayout.invalidate();
+                    }
+                });
+        Log.d(TAG, "Song added: " + result.getName());
     }
 
     @Override
