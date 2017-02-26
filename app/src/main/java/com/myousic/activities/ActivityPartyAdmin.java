@@ -145,6 +145,11 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         startActivity(searchIntent);
     }
 
+    public void options(View v) {
+        Intent optionsIntent = new Intent(this, ActivityOptions.class);
+        startActivity(optionsIntent);
+    }
+
     public void play() {
         if (!audioControllerInstance.isPaused()) {
             QueuedSong nextSong = getNextSong();

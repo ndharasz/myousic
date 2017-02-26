@@ -12,4 +12,5 @@
     <dimen name="queue_table_text">8pt</dimen>
     <dimen name="queue_padding">8dp</dimen>
     <dimen name="now_playing_padding">10dp</dimen>
+    <dimen name="options_menu_padding">20dp</dimen>
 </resources>

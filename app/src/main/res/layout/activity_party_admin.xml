@@ -33,18 +33,40 @@
             android:textColor="@color/colorAccent"/>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/add"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:text="@string/add"
-        android:textSize="@dimen/big_button_text"
-        android:textColor="@color/colorPrimaryDark"
-        android:onClick="addSong" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/options"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:text="@string/options"
+            android:textSize="@dimen/big_button_text"
+            android:textColor="@color/colorPrimaryDark"
+            android:onClick="options"/>
+
+        <Button
+            android:id="@+id/add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:text="@string/add"
+            android:textSize="@dimen/big_button_text"
+            android:textColor="@color/colorPrimaryDark"
+            android:onClick="addSong" />
+
+    </LinearLayout>
 
     <TableLayout
         android:id="@+id/queue_table"
