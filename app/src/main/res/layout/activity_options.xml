@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
@@ -26,8 +24,8 @@
         android:layout_height="match_parent">
 
         <TableRow
-            android:layout_marginTop="@dimen/options_menu_padding"
-            android:layout_marginBottom="@dimen/options_menu_padding">
+            android:padding="@dimen/options_menu_padding"
+            android:onClick="partyName">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -44,8 +42,8 @@
         </TableRow>
 
         <TableRow
-            android:layout_marginTop="@dimen/options_menu_padding"
-            android:layout_marginBottom="@dimen/options_menu_padding">
+            android:padding="@dimen/options_menu_padding"
+            android:onClick="playlist">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -62,8 +60,8 @@
         </TableRow>
 
         <TableRow
-            android:layout_marginTop="@dimen/options_menu_padding"
-            android:layout_marginBottom="@dimen/options_menu_padding">
+            android:padding="@dimen/options_menu_padding"
+            android:onClick="blacklist">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

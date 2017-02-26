@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#FFD480</color>
     <color name="colorPrimaryDark">#007399</color>
+    <color name="colorPrimaryDarkSelected">#005177</color>
     <color name="Dark">#000000</color>
     <color name="colorAccent">#FFFFFF</color>
     <color name="colorTableBorder">#000040</color>

@@ -84,7 +84,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                 .edit().putString("party_id", id).commit();
         //store in db
         db.getReference().child("parties").child(id).setValue("");
-        currParty = db.getReference().child("parties").child(id).getRef();
+        currParty = db.getReference().child("parties").child(id).child("queue").getRef();
         currParty.addChildEventListener(customQueueEventListener);
         idField = (TextView)findViewById(R.id.party_id_field);
         idField.setText(id);

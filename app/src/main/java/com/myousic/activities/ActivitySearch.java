@@ -86,7 +86,7 @@ public class ActivitySearch extends AppCompatActivity {
             WidgetSongRow widgetSongRow = (WidgetSongRow) v;
             QueuedSong queuedSong = new QueuedSong(widgetSongRow.getSong());
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = database.getReference("parties/").child(partyID)
+            DatabaseReference databaseReference = database.getReference("parties").child(partyID).child("queue")
                     .child(Long.toString(queuedSong.getTimestamp()));
             databaseReference.setValue(queuedSong);
             Toast toast = Toast.makeText(this, "Song added: " + queuedSong.getName(), Toast.LENGTH_SHORT);
