@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TableRow;
 
 import com.myousic.R;
 
@@ -14,6 +15,15 @@ public class ActivityOptions extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        setUnclickedColor(findViewById(R.id.party_name));
+        setUnclickedColor(findViewById(R.id.playlist));
+        setUnclickedColor(findViewById(R.id.blacklist));
     }
 
     protected void setClickedColor(View v) {

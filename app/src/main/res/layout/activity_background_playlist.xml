@@ -53,13 +53,17 @@
 
     </LinearLayout>
 
-    <TableLayout
-        android:id="@+id/queue_table"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginBottom="@dimen/activity_vertical_margin">
+        android:background="@color/colorPrimaryDark">
+        <TableLayout
+            android:id="@+id/background_table"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    </TableLayout>
+        </TableLayout>
+    </ScrollView>
 
 </LinearLayout>

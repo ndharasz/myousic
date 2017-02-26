@@ -24,6 +24,7 @@
         android:layout_height="match_parent">
 
         <TableRow
+            android:id="@+id/party_name"
             android:padding="@dimen/options_menu_padding"
             android:onClick="partyName">
             <TextView
@@ -42,6 +43,7 @@
         </TableRow>
 
         <TableRow
+            android:id="@+id/playlist"
             android:padding="@dimen/options_menu_padding"
             android:onClick="playlist">
             <TextView
@@ -60,6 +62,7 @@
         </TableRow>
 
         <TableRow
+            android:id="@+id/blacklist"
             android:padding="@dimen/options_menu_padding"
             android:onClick="blacklist">
             <TextView

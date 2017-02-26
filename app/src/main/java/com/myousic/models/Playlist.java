@@ -11,11 +11,13 @@ import java.util.List;
 // It is not intended to model myousic playlists such as the queue.
 public class Playlist {
     String name;
+    String owner;
     String uri;
     List<Song> songs;
 
-    public Playlist(String name, String uri) {
+    public Playlist(String name, String owner, String uri) {
         this.name = name;
+        this.owner = owner;
         this.uri = uri;
         songs = new LinkedList<>();
     }
@@ -38,6 +40,14 @@ public class Playlist {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public List<Song> getSongs() {
