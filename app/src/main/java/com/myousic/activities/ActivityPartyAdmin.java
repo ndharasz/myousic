@@ -24,6 +24,7 @@ import com.myousic.R;
 import com.myousic.models.QueuedSong;
 import com.myousic.models.Song;
 import com.myousic.util.CustomAudioController;
+import com.myousic.util.CustomPlaylistListener;
 import com.myousic.util.CustomQueueEventListener;
 import com.myousic.util.NowPlayingEventListener;
 import com.myousic.widgets.WidgetSongRow;
@@ -35,6 +36,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     private static final String TAG = "ActivityPartyAdmin";
     private FirebaseDatabase db;
     DatabaseReference currParty;
+    DatabaseReference background;
     private String authToken;
 
     TextView idField;
@@ -45,6 +47,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
     CustomAudioController audioControllerInstance;
     CustomQueueEventListener customQueueEventListener;
+    CustomPlaylistListener customPlaylistListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +59,12 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
         customQueueEventListener = new CustomQueueEventListener(this,
                 (TableLayout) findViewById(R.id.queue_table));
+        customPlaylistListener = new CustomPlaylistListener();
 
         idSetup();
         buttonSetup();
         currSongSetup();
+
     }
 
     @Override
@@ -85,6 +90,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         //store in db
         db.getReference().child("parties").child(id).setValue("");
         currParty = db.getReference().child("parties").child(id).child("queue").getRef();
+        background = db.getReference().child("parties").child(id).child("background").getRef();
         currParty.addChildEventListener(customQueueEventListener);
         idField = (TextView)findViewById(R.id.party_id_field);
         idField.setText(id);
@@ -137,6 +143,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     protected void currSongSetup() {
         RelativeLayout songWrapper = (RelativeLayout) findViewById(R.id.now_playing);
         currParty.addChildEventListener(new NowPlayingEventListener(this, songWrapper));
+        background.addChildEventListener(customPlaylistListener);
     }
 
     public void addSong(View v) {
@@ -154,26 +161,37 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         if (!audioControllerInstance.isPaused()) {
             QueuedSong nextSong = getNextSong();
             if (nextSong != null) {
+                // first get the song out of the queue
                 Log.d(TAG, "Song: " + nextSong.getName());
-                audioControllerInstance.play(nextSong, new CustomAudioController.SongPlayingListener() {
-                    @Override
-                    public void onPlaying(QueuedSong song) {
-                        currParty.child(String.valueOf(song.getTimestamp())).removeValue();
-                        song.setTimestamp(Long.MAX_VALUE);
-                        currParty.child("current").setValue(song);
-                        play.setVisibility(View.GONE);
-                        pause.setVisibility(View.VISIBLE);
-                    }
-                });
+                playAndUpdateDatabase(nextSong);
             } else {
-                Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
-                return;
+                nextSong = getNextBackgroundSong();
+                if (nextSong != null) {
+                    // if there's no song in the queue, check the background queue
+                    Log.d(TAG, "Song: " + nextSong.getName());
+                    playAndUpdateDatabase(nextSong);
+                } else {
+                    Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
+                }
             }
         } else {
             audioControllerInstance.resume();
             play.setVisibility(View.GONE);
             pause.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void playAndUpdateDatabase(QueuedSong nextSong) {
+        audioControllerInstance.play(nextSong, new CustomAudioController.SongPlayingListener() {
+            @Override
+            public void onPlaying(QueuedSong song) {
+                currParty.child(String.valueOf(song.getTimestamp())).removeValue();
+                song.setTimestamp(Long.MAX_VALUE);
+                currParty.child("current").setValue(song);
+                play.setVisibility(View.GONE);
+                pause.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     public void pause() {
@@ -207,5 +225,9 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
     private QueuedSong getNextSong() {
         return customQueueEventListener.getNextSong();
+    }
+
+    private QueuedSong getNextBackgroundSong() {
+        return customPlaylistListener.getSong();
     }
 }
