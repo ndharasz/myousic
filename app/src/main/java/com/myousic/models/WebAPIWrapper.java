@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,8 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by brian on 2/12/17.
@@ -43,6 +46,10 @@ public class WebAPIWrapper {
 
     public interface AlbumCoverListener {
         void onResponse(Bitmap bitmap);
+    }
+
+    public interface GetPlaylistListener {
+        void onResponse(List<Playlist> playlists);
     }
 
     private class RetrieveAlbumTask extends AsyncTask<String, Void, Bitmap> {
@@ -143,6 +150,47 @@ public class WebAPIWrapper {
                 Log.d(TAG, "Error retrieving album art request");
             }
         });
+        queue.add(jsonObjectRequest);
+    }
+
+    public void getPlaylists(final String authToken, String uid, final GetPlaylistListener getPlaylistListener) {
+        //String url = "https://api.spotify.com/v1/users/" + uid + "/playlists";
+        String url = "https://api.spotify.com/v1/users/" + "brianwoodbury" + "/playlists";
+        Log.d(TAG, url);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.d(TAG, "JSON Response getting playlists");
+                    JSONArray jsonArray = response.getJSONArray("items");
+                    List<Playlist> playlists = new LinkedList<Playlist>();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonPlaylist = jsonArray.getJSONObject(i);
+                        String name = jsonPlaylist.getString("name");
+                        String uri = jsonPlaylist.getString("uri");
+                        playlists.add(new Playlist(name, uri));
+                    }
+                    getPlaylistListener.onResponse(playlists);
+                } catch (JSONException e) {
+                    Log.d(TAG, "Error retrieving playlists");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "JSON url error");
+            }
+        })
+        // Override the getHeaders method to add the authentication token
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "Bearer " + authToken);
+                return params;
+            }
+        };
         queue.add(jsonObjectRequest);
     }
 

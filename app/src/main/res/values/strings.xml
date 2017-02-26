@@ -17,5 +17,8 @@
 
     <string name="party_name">Party name</string>
     <string name="background">Background playlist</string>
+    <string name="background_title">Background Playlist</string>
+    <string name="playlists">Playlists</string>
+    <string name="import_playlist">Import</string>
     <string name="blacklist">Blacklist</string>
 </resources>

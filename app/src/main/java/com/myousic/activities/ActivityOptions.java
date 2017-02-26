@@ -1,5 +1,6 @@
 package com.myousic.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ public class ActivityOptions extends AppCompatActivity {
 
     protected void playlist(View v) {
         setClickedColor(v);
+        Intent playlistIntent =  new Intent(this, ActivityBackgroundPlaylist.class);
+        startActivity(playlistIntent);
     }
 
     protected void blacklist(View v) {
