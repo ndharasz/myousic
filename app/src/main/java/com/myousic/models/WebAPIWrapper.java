@@ -224,7 +224,7 @@ public class WebAPIWrapper {
                         String song = jsonSong.getString("name");
                         String artist = jsonSong.getJSONArray("artists").getJSONObject(0).getString("name");
                         String album = jsonSong.getJSONObject("album").getString("name");
-                        String uri = jsonSong.getString("uri").split(":")[2];
+                        String uri = jsonSong.getString("uri");
                         songs.add(new Song(song, artist, album, uri));
                     }
                     searchResultResponseListener.onResponse(songs);

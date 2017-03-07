@@ -18,6 +18,7 @@ import com.myousic.R;
 import com.myousic.models.Playlist;
 import com.myousic.models.Song;
 import com.myousic.models.WebAPIWrapper;
+import com.myousic.util.LocalPlaylistController;
 import com.myousic.widgets.WidgetPlaylistRow;
 import com.myousic.widgets.WidgetSongRow;
 
@@ -28,7 +29,6 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
     WebAPIWrapper instance;
     TableLayout backgroundSongTable;
 
-    DatabaseReference ref;
     String partyID;
 
     @Override
@@ -42,8 +42,17 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
         if (partyID.equals("xxxx")) {
             throw new Error("Party ID lost");
         }
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        ref = database.getReference().child("parties");
+
+        LocalPlaylistController playlistController = LocalPlaylistController.getInstance();
+        for (Song song : playlistController) {
+            WidgetSongRow songRow = (WidgetSongRow) LayoutInflater.from(backgroundSongTable.getContext())
+                    .inflate(R.layout.layout_song_row, null);
+            ((TextView) songRow.findViewById(R.id.song_name)).setText(song.getName());
+            ((TextView) songRow.findViewById(R.id.song_artist)).setText(song.getArtist());
+            songRow.findViewById(R.id.song_image).setVisibility(View.GONE);
+            songRow.setSong(song);
+            backgroundSongTable.addView(songRow);
+        }
     }
 
     protected void importPlaylist(View v) {
@@ -85,11 +94,8 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
         alertDialogBuilder.show();
     }
 
-    protected void addSong(View v) {
-
-    }
-
-    private void addSongs(String token, Playlist playlist) {
+    private void addSongs(String token, final Playlist playlist) {
+        final LocalPlaylistController playlistInstance = LocalPlaylistController.getInstance();
         instance.getSongsFromPlaylist(token, playlist, new WebAPIWrapper.SearchResultResponseListener() {
             @Override
             public void onResponse(List<Song> songs) {
@@ -102,7 +108,7 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
                     songRow.setSong(song);
                     backgroundSongTable.addView(songRow);
 
-                    ref.child(partyID).child("backgound").child(song.getUri()).setValue(song);
+                    playlistInstance.push(song);
                 }
             }
         });

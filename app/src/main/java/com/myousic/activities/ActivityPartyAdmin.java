@@ -2,34 +2,26 @@ package com.myousic.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
 import com.myousic.models.Song;
 import com.myousic.util.CustomAudioController;
-import com.myousic.util.CustomPlaylistListener;
 import com.myousic.util.CustomQueueEventListener;
+import com.myousic.util.LocalPlaylistController;
 import com.myousic.util.NowPlayingEventListener;
-import com.myousic.widgets.WidgetSongRow;
 
-import java.util.Queue;
 import java.util.Random;
 
 public class ActivityPartyAdmin extends AppCompatActivity {
@@ -47,7 +39,6 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
     CustomAudioController audioControllerInstance;
     CustomQueueEventListener customQueueEventListener;
-    CustomPlaylistListener customPlaylistListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +50,6 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
         customQueueEventListener = new CustomQueueEventListener(this,
                 (TableLayout) findViewById(R.id.queue_table));
-        customPlaylistListener = new CustomPlaylistListener();
 
         idSetup();
         buttonSetup();
@@ -143,7 +133,6 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     protected void currSongSetup() {
         RelativeLayout songWrapper = (RelativeLayout) findViewById(R.id.now_playing);
         currParty.addChildEventListener(new NowPlayingEventListener(this, songWrapper));
-        background.addChildEventListener(customPlaylistListener);
     }
 
     public void addSong(View v) {
@@ -165,8 +154,9 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                 Log.d(TAG, "Song: " + nextSong.getName());
                 playAndUpdateDatabase(nextSong);
             } else {
-                nextSong = getNextBackgroundSong();
-                if (nextSong != null) {
+                Song song = LocalPlaylistController.getInstance().pop();
+                if (song != null) {
+                    nextSong = new QueuedSong(song);
                     // if there's no song in the queue, check the background queue
                     Log.d(TAG, "Song: " + nextSong.getName());
                     playAndUpdateDatabase(nextSong);
@@ -207,27 +197,21 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     public void next() {
         QueuedSong nextSong = getNextSong();
         if (nextSong != null) {
-            audioControllerInstance.next(nextSong, new CustomAudioController.SongPlayingListener() {
-                @Override
-                public void onPlaying(QueuedSong song) {
-                    currParty.child(String.valueOf(song.getTimestamp())).removeValue();
-                    song.setTimestamp(Long.MAX_VALUE);
-                    currParty.child("current").setValue(song);
-                    play.setVisibility(View.GONE);
-                    pause.setVisibility(View.VISIBLE);
-                }
-            });
+            playAndUpdateDatabase(nextSong);
         } else {
-            Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
-            return;
+            Song song = LocalPlaylistController.getInstance().pop();
+            if (song != null) {
+                nextSong = new QueuedSong(song);
+                // if there's no song in the queue, check the background queue
+                Log.d(TAG, "Song: " + nextSong.getName());
+                playAndUpdateDatabase(nextSong);
+            } else {
+                Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     private QueuedSong getNextSong() {
         return customQueueEventListener.getNextSong();
-    }
-
-    private QueuedSong getNextBackgroundSong() {
-        return customPlaylistListener.getSong();
     }
 }
