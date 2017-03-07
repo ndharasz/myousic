@@ -2,39 +2,33 @@ package com.myousic.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
 import com.myousic.models.Song;
 import com.myousic.util.CustomAudioController;
 import com.myousic.util.CustomQueueEventListener;
+import com.myousic.util.LocalPlaylistController;
 import com.myousic.util.NowPlayingEventListener;
-import com.myousic.widgets.WidgetSongRow;
 
-import java.util.Queue;
 import java.util.Random;
 
 public class ActivityPartyAdmin extends AppCompatActivity {
     private static final String TAG = "ActivityPartyAdmin";
     private FirebaseDatabase db;
     DatabaseReference currParty;
+    DatabaseReference background;
     private String authToken;
 
     TextView idField;
@@ -60,6 +54,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         idSetup();
         buttonSetup();
         currSongSetup();
+
     }
 
     @Override
@@ -84,7 +79,8 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                 .edit().putString("party_id", id).commit();
         //store in db
         db.getReference().child("parties").child(id).setValue("");
-        currParty = db.getReference().child("parties").child(id).getRef();
+        currParty = db.getReference().child("parties").child(id).child("queue").getRef();
+        background = db.getReference().child("parties").child(id).child("background").getRef();
         currParty.addChildEventListener(customQueueEventListener);
         idField = (TextView)findViewById(R.id.party_id_field);
         idField.setText(id);
@@ -145,30 +141,47 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         startActivity(searchIntent);
     }
 
+    public void options(View v) {
+        Intent optionsIntent = new Intent(this, ActivityOptions.class);
+        startActivity(optionsIntent);
+    }
+
     public void play() {
         if (!audioControllerInstance.isPaused()) {
             QueuedSong nextSong = getNextSong();
             if (nextSong != null) {
+                // first get the song out of the queue
                 Log.d(TAG, "Song: " + nextSong.getName());
-                audioControllerInstance.play(nextSong, new CustomAudioController.SongPlayingListener() {
-                    @Override
-                    public void onPlaying(QueuedSong song) {
-                        currParty.child(String.valueOf(song.getTimestamp())).removeValue();
-                        song.setTimestamp(Long.MAX_VALUE);
-                        currParty.child("current").setValue(song);
-                        play.setVisibility(View.GONE);
-                        pause.setVisibility(View.VISIBLE);
-                    }
-                });
+                playAndUpdateDatabase(nextSong);
             } else {
-                Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
-                return;
+                Song song = LocalPlaylistController.getInstance().pop();
+                if (song != null) {
+                    nextSong = new QueuedSong(song);
+                    // if there's no song in the queue, check the background queue
+                    Log.d(TAG, "Song: " + nextSong.getName());
+                    playAndUpdateDatabase(nextSong);
+                } else {
+                    Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
+                }
             }
         } else {
             audioControllerInstance.resume();
             play.setVisibility(View.GONE);
             pause.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void playAndUpdateDatabase(QueuedSong nextSong) {
+        audioControllerInstance.play(nextSong, new CustomAudioController.SongPlayingListener() {
+            @Override
+            public void onPlaying(QueuedSong song) {
+                currParty.child(String.valueOf(song.getTimestamp())).removeValue();
+                song.setTimestamp(Long.MAX_VALUE);
+                currParty.child("current").setValue(song);
+                play.setVisibility(View.GONE);
+                pause.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     public void pause() {
@@ -184,19 +197,17 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     public void next() {
         QueuedSong nextSong = getNextSong();
         if (nextSong != null) {
-            audioControllerInstance.next(nextSong, new CustomAudioController.SongPlayingListener() {
-                @Override
-                public void onPlaying(QueuedSong song) {
-                    currParty.child(String.valueOf(song.getTimestamp())).removeValue();
-                    song.setTimestamp(Long.MAX_VALUE);
-                    currParty.child("current").setValue(song);
-                    play.setVisibility(View.GONE);
-                    pause.setVisibility(View.VISIBLE);
-                }
-            });
+            playAndUpdateDatabase(nextSong);
         } else {
-            Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
-            return;
+            Song song = LocalPlaylistController.getInstance().pop();
+            if (song != null) {
+                nextSong = new QueuedSong(song);
+                // if there's no song in the queue, check the background queue
+                Log.d(TAG, "Song: " + nextSong.getName());
+                playAndUpdateDatabase(nextSong);
+            } else {
+                Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

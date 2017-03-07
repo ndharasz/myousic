@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.view.View;
 import android.widget.TableLayout;
@@ -71,6 +72,7 @@ public class ActivitySearch extends AppCompatActivity {
                     });
                     ((TextView)songRow.findViewById(R.id.song_name)).setText(result.getName());
                     ((TextView)songRow.findViewById(R.id.song_artist)).setText(result.getArtist());
+                    songRow.findViewById(R.id.song_image).setVisibility(View.GONE);
                     tableLayout.addView(songRow);
                 }
             }
@@ -86,7 +88,7 @@ public class ActivitySearch extends AppCompatActivity {
             WidgetSongRow widgetSongRow = (WidgetSongRow) v;
             QueuedSong queuedSong = new QueuedSong(widgetSongRow.getSong());
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = database.getReference("parties/").child(partyID)
+            DatabaseReference databaseReference = database.getReference("parties").child(partyID).child("queue")
                     .child(Long.toString(queuedSong.getTimestamp()));
             databaseReference.setValue(queuedSong);
             Toast toast = Toast.makeText(this, "Song added: " + queuedSong.getName(), Toast.LENGTH_SHORT);

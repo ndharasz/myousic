@@ -40,7 +40,7 @@ public class ActivityQueue extends AppCompatActivity {
         }
         //get party db reference using id
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = database.getReference("parties").child(partyID);
+        DatabaseReference databaseReference = database.getReference("parties").child(partyID).child("queue");
         //add a listener for when the db queue changes
         //handles adding/removing songs from UI
         //!!change this so that "this" is first arg

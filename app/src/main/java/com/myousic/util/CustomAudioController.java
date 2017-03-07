@@ -90,24 +90,19 @@ public class CustomAudioController {
 
     // Takes in a song and plays it
     public boolean play(final QueuedSong song, final SongPlayingListener onSongPlayingListener) {
-        if (!player.getPlaybackState().isPlaying) {
-            isPaused = false;
-            player.playUri(new Player.OperationCallback() {
-                @Override
-                public void onSuccess() {
-                    onSongPlayingListener.onPlaying(song);
-                }
+        isPaused = false;
+        player.playUri(new Player.OperationCallback() {
+            @Override
+            public void onSuccess() {
+                onSongPlayingListener.onPlaying(song);
+            }
 
-                @Override
-                public void onError(Error error) {
+            @Override
+            public void onError(Error error) {
 
-                }
-            }, song.getUri(), 0, 0);
-            return true;
-        } else {
-            Log.d(TAG, "Player was already playing");
-            return false;
-        }
+            }
+        }, song.getUri(), 0, 0);
+        return true;
     }
 
     public boolean next(final QueuedSong song, final SongPlayingListener onSongPlayingListener) {
