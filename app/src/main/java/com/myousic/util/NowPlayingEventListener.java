@@ -92,4 +92,8 @@ public class NowPlayingEventListener implements ChildEventListener {
     public void onCancelled(DatabaseError databaseError) {
 
     }
+
+    public boolean songPlaying() {
+        return !song_name.getText().toString().equals("No song playing");
+    }
 }

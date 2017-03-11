@@ -21,4 +21,8 @@
     <string name="playlists">Playlists</string>
     <string name="import_playlist">Import</string>
     <string name="blacklist">Blacklist</string>
+
+    <string name="enter_party_id">New party ID</string>
+    <string name="change_party_warning">Warning: changing the party ID will delete the old party!</string>
+    <string name="change_party">Change Party ID</string>
 </resources>

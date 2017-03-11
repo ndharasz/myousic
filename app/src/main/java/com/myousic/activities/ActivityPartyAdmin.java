@@ -37,8 +37,11 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     Button pause;
     Button next;
 
+    RelativeLayout songWrapper;
+
     CustomAudioController audioControllerInstance;
     CustomQueueEventListener customQueueEventListener;
+    NowPlayingEventListener nowPlayingEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,6 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         //store in db
         db.getReference().child("parties").child(id).setValue("");
         currParty = db.getReference().child("parties").child(id).child("queue").getRef();
-        background = db.getReference().child("parties").child(id).child("background").getRef();
         currParty.addChildEventListener(customQueueEventListener);
         idField = (TextView)findViewById(R.id.party_id_field);
         idField.setText(id);
@@ -131,8 +133,9 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     }
 
     protected void currSongSetup() {
-        RelativeLayout songWrapper = (RelativeLayout) findViewById(R.id.now_playing);
-        currParty.addChildEventListener(new NowPlayingEventListener(this, songWrapper));
+        songWrapper = (RelativeLayout) findViewById(R.id.now_playing);
+        nowPlayingEventListener = new NowPlayingEventListener(this, songWrapper);
+        currParty.addChildEventListener(nowPlayingEventListener);
     }
 
     public void addSong(View v) {
@@ -147,7 +150,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     }
 
     public void play() {
-        if (!audioControllerInstance.isPaused()) {
+        if (!nowPlayingEventListener.songPlaying()) {
             QueuedSong nextSong = getNextSong();
             if (nextSong != null) {
                 // first get the song out of the queue
@@ -162,6 +165,8 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                     playAndUpdateDatabase(nextSong);
                 } else {
                     Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
+                    play.setVisibility(View.VISIBLE);
+                    pause.setVisibility(View.GONE);
                 }
             }
         } else {

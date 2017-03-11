@@ -36,6 +36,8 @@ public class ActivityOptions extends AppCompatActivity {
 
     protected void partyName(View v) {
         setClickedColor(v);
+        Intent partyNameIntent = new Intent(this, ActivityPartyName.class);
+        startActivity(partyNameIntent);
     }
 
     protected void playlist(View v) {

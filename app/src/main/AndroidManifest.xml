@@ -42,7 +42,8 @@
         <activity
             android:name=".activities.ActivityOptions"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.ActivityBackgroundPlaylist"></activity>
+        <activity android:name=".activities.ActivityBackgroundPlaylist" />
+        <activity android:name=".activities.ActivityPartyName"></activity>
     </application>
 
 </manifest>
