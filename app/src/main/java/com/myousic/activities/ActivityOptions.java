@@ -48,5 +48,7 @@ public class ActivityOptions extends AppCompatActivity {
 
     protected void blacklist(View v) {
         setClickedColor(v);
+        Intent blacklistIntent =  new Intent(this, ActivityBlacklist.class);
+        startActivity(blacklistIntent);
     }
 }

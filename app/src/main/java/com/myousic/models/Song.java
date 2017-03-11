@@ -25,6 +25,14 @@ public class Song {
         this.uri = uri;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        if (!(other instanceof Song)) return false;
+        Song that = (Song) other;
+        return uri.equals(that.uri);
+    }
+
     public String getName() {
         return song;
     }

@@ -15,6 +15,7 @@ import com.myousic.models.Song;
 
 public class WidgetSongRow extends TableRow {
     private Song song;
+    private int index;
 
     public WidgetSongRow(Context context) {
         super(context);
@@ -30,5 +31,13 @@ public class WidgetSongRow extends TableRow {
 
     public Song getSong() {
         return song;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }

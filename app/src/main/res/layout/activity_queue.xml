@@ -41,7 +41,9 @@
             android:id="@+id/queue_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/queue_padding">
+            android:paddingLeft="@dimen/queue_padding"
+            android:showDividers="middle"
+            android:divider="@drawable/row_shape">
 
         </TableLayout>
     </ScrollView>

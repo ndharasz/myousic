@@ -19,6 +19,7 @@ import com.myousic.models.Playlist;
 import com.myousic.models.Song;
 import com.myousic.models.WebAPIWrapper;
 import com.myousic.util.LocalPlaylistController;
+import com.myousic.widgets.WidgetInteractiveTable;
 import com.myousic.widgets.WidgetPlaylistRow;
 import com.myousic.widgets.WidgetSongRow;
 
@@ -27,7 +28,7 @@ import java.util.List;
 public class ActivityBackgroundPlaylist extends AppCompatActivity {
     private static final String TAG = "ActivityBackgroundPlaylist";
     WebAPIWrapper instance;
-    TableLayout backgroundSongTable;
+    WidgetInteractiveTable backgroundSongTable;
 
     String partyID;
 
@@ -36,23 +37,29 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_background_playlist);
         instance = WebAPIWrapper.getInstance(this);
-        backgroundSongTable = (TableLayout) findViewById(R.id.background_table);
+        backgroundSongTable = (WidgetInteractiveTable) findViewById(R.id.background_table);
 
         partyID = getSharedPreferences("Party", Context.MODE_PRIVATE).getString("party_id", "xxxx");
         if (partyID.equals("xxxx")) {
             throw new Error("Party ID lost");
         }
 
-        LocalPlaylistController playlistController = LocalPlaylistController.getInstance();
+        final LocalPlaylistController playlistController = LocalPlaylistController.getInstance();
         for (Song song : playlistController) {
-            WidgetSongRow songRow = (WidgetSongRow) LayoutInflater.from(backgroundSongTable.getContext())
-                    .inflate(R.layout.layout_song_row, null);
-            ((TextView) songRow.findViewById(R.id.song_name)).setText(song.getName());
-            ((TextView) songRow.findViewById(R.id.song_artist)).setText(song.getArtist());
-            songRow.findViewById(R.id.song_image).setVisibility(View.GONE);
-            songRow.setSong(song);
-            backgroundSongTable.addView(songRow);
+            addSong(song);
         }
+        backgroundSongTable.setOnOrderAlteredListener(new WidgetInteractiveTable.OnOrderAlteredListener() {
+            @Override
+            public void onOrderAltered(Song song, int oldPos, int newPos) {
+                playlistController.move(oldPos, newPos);
+            }
+        });
+        backgroundSongTable.setOnSongDeletedListener(new WidgetInteractiveTable.OnSongDeletedListener() {
+            @Override
+            public void onSongDeleted(Song song, int index) {
+                playlistController.remove(index);
+            }
+        });
     }
 
     protected void importPlaylist(View v) {
@@ -100,17 +107,21 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
             @Override
             public void onResponse(List<Song> songs) {
                 for (Song song : songs) {
-                    WidgetSongRow songRow = (WidgetSongRow) LayoutInflater.from(backgroundSongTable.getContext())
-                            .inflate(R.layout.layout_song_row, null);
-                    ((TextView) songRow.findViewById(R.id.song_name)).setText(song.getName());
-                    ((TextView) songRow.findViewById(R.id.song_artist)).setText(song.getArtist());
-                    songRow.findViewById(R.id.song_image).setVisibility(View.GONE);
-                    songRow.setSong(song);
-                    backgroundSongTable.addView(songRow);
+                    addSong(song);
 
                     playlistInstance.push(song);
                 }
             }
         });
+    }
+
+    private void addSong(Song song) {
+        WidgetSongRow songRow = (WidgetSongRow) LayoutInflater.from(backgroundSongTable.getContext())
+                .inflate(R.layout.layout_song_row, null);
+        ((TextView) songRow.findViewById(R.id.song_name)).setText(song.getName());
+        ((TextView) songRow.findViewById(R.id.song_artist)).setText(song.getArtist());
+        songRow.findViewById(R.id.song_image).setVisibility(View.GONE);
+        songRow.setSong(song);
+        backgroundSongTable.addView(songRow);
     }
 }

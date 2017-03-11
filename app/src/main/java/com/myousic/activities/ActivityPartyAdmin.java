@@ -21,6 +21,7 @@ import com.myousic.util.CustomAudioController;
 import com.myousic.util.CustomQueueEventListener;
 import com.myousic.util.LocalPlaylistController;
 import com.myousic.util.NowPlayingEventListener;
+import com.myousic.widgets.WidgetInteractiveTable;
 
 import java.util.Random;
 
@@ -51,8 +52,16 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         db = FirebaseDatabase.getInstance();
         authToken = getSharedPreferences("loginPrefs", MODE_PRIVATE).getString("token", "");
 
-        customQueueEventListener = new CustomQueueEventListener(this,
-                (TableLayout) findViewById(R.id.queue_table));
+        WidgetInteractiveTable table = (WidgetInteractiveTable) findViewById(R.id.queue_table);
+        customQueueEventListener = new CustomQueueEventListener(this, table);
+        table.disableDragAndDrop();
+        table.setOnSongDeletedListener(new WidgetInteractiveTable.OnSongDeletedListener() {
+            @Override
+            public void onSongDeleted(Song song, int pos) {
+                QueuedSong queuedSong = (QueuedSong) song;
+                currParty.child(String.valueOf(queuedSong.getTimestamp())).removeValue();
+            }
+        });
 
         idSetup();
         buttonSetup();
