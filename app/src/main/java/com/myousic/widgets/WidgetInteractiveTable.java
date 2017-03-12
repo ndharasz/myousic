@@ -61,12 +61,6 @@ public class WidgetInteractiveTable extends TableLayout {
             ((TextView) dialogView.findViewById(R.id.song_name)).setText(song.getName());
             ((TextView) dialogView.findViewById(R.id.song_artist)).setText(song.getArtist());
             WebAPIWrapper instance = WebAPIWrapper.getInstance(getContext());
-            instance.getLargeAlbumCover(song.getUri(), new WebAPIWrapper.AlbumCoverListener() {
-                @Override
-                public void onResponse(Bitmap bitmap) {
-                    ((ImageView) dialogView.findViewById(R.id.album_art)).setImageBitmap(bitmap);
-                }
-            });
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
                     getContext(), android.R.style.Theme_Holo_Dialog);
             dialogBuilder.setTitle("Song Information");
@@ -85,8 +79,15 @@ public class WidgetInteractiveTable extends TableLayout {
 
                 }
             });
-            AlertDialog alertDialog = dialogBuilder.create();
-            alertDialog.show();
+            final AlertDialog alertDialog = dialogBuilder.create();
+
+            instance.getLargeAlbumCover(song.getUri(), new WebAPIWrapper.AlbumCoverListener() {
+                @Override
+                public void onResponse(Bitmap bitmap) {
+                    ((ImageView) dialogView.findViewById(R.id.album_art)).setImageBitmap(bitmap);
+                    alertDialog.show();
+                }
+            });
         }
     };
 
