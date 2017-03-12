@@ -3,6 +3,7 @@ package com.myousic.activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,8 +31,6 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
     WebAPIWrapper instance;
     WidgetInteractiveTable backgroundSongTable;
 
-    String partyID;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,15 +38,7 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
         instance = WebAPIWrapper.getInstance(this);
         backgroundSongTable = (WidgetInteractiveTable) findViewById(R.id.background_table);
 
-        partyID = getSharedPreferences("Party", Context.MODE_PRIVATE).getString("party_id", "xxxx");
-        if (partyID.equals("xxxx")) {
-            throw new Error("Party ID lost");
-        }
-
         final LocalPlaylistController playlistController = LocalPlaylistController.getInstance();
-        for (Song song : playlistController) {
-            addSong(song);
-        }
         backgroundSongTable.setOnOrderAlteredListener(new WidgetInteractiveTable.OnOrderAlteredListener() {
             @Override
             public void onOrderAltered(Song song, int oldPos, int newPos) {
@@ -60,6 +51,17 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
                 playlistController.remove(index);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        backgroundSongTable.removeAllViews();
+        LocalPlaylistController playlistController = LocalPlaylistController.getInstance();
+        for (Song song : playlistController) {
+            addSong(song);
+        }
+
     }
 
     protected void importPlaylist(View v) {
@@ -123,5 +125,11 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
         songRow.findViewById(R.id.song_image).setVisibility(View.GONE);
         songRow.setSong(song);
         backgroundSongTable.addView(songRow);
+    }
+
+    protected void addSong(View v) {
+        Intent backgroundPlaylistSearchIntent = new Intent(ActivityBackgroundPlaylist.this,
+                ActivityBackgroundPlaylistSearch.class);
+        startActivity(backgroundPlaylistSearchIntent);
     }
 }

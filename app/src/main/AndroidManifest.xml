@@ -44,7 +44,8 @@
             android:screenOrientation="portrait" />
         <activity android:name=".activities.ActivityBackgroundPlaylist" />
         <activity android:name=".activities.ActivityPartyName" />
-        <activity android:name=".activities.ActivityBlacklist"></activity>
+        <activity android:name=".activities.ActivityBlacklist" />
+        <activity android:name=".activities.ActivityBackgroundPlaylistSearch"></activity>
     </application>
 
 </manifest>

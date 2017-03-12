@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/background_title"
         android:textSize="@dimen/title_1"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorAccent"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
