@@ -22,6 +22,7 @@ import com.myousic.util.CustomQueueEventListener;
 import com.myousic.util.LocalPlaylistController;
 import com.myousic.util.NowPlayingEventListener;
 import com.myousic.widgets.WidgetInteractiveTable;
+import com.spotify.sdk.android.player.Spotify;
 
 import java.util.Random;
 
@@ -76,9 +77,9 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public void onDestroy() {
         audioControllerInstance.destroy();
+        super.onDestroy();
     }
 
     protected void idSetup() {

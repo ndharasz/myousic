@@ -165,6 +165,8 @@ public class CustomAudioController {
     }
 
     public void destroy() {
-        player.destroy();
+        pause();
+        Spotify.destroyPlayer(this);
+        instance = null;
     }
 }
