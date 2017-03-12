@@ -171,6 +171,32 @@ public class WebAPIWrapper {
         queue.add(jsonObjectRequest);
     }
 
+    public void getLargeAlbumCover(String uri, final AlbumCoverListener albumCoverListener) {
+        uri = uri.substring(uri.lastIndexOf(":") + 1, uri.length());
+        String url = "https://api.spotify.com/v1/tracks/" + uri;
+        Log.d(TAG, url);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONObject("album").getJSONArray("images");
+                    final String smallestImageURL = jsonArray.getJSONObject(0).getString("url");
+                    Log.d(TAG, "Image URL: " + smallestImageURL);
+                    new RetrieveAlbumTask(albumCoverListener).execute(smallestImageURL);
+                } catch (JSONException e) {
+                    Log.d(TAG, "Error retrieving art from JSON");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "Error retrieving album art request");
+            }
+        });
+        queue.add(jsonObjectRequest);
+    }
+
     public void getPlaylists(final String authToken, final GetPlaylistListener getPlaylistListener) {
         //String url = "https://api.spotify.com/v1/users/" + uid + "/playlists";
         String url = "https://api.spotify.com/v1/me/playlists";

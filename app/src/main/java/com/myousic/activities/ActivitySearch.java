@@ -30,7 +30,7 @@ public class ActivitySearch extends AppCompatActivity {
     private final String TRACK = "track";
     private final String ALBUM = "album";
 
-    private static String TAG = "ActivitySearch";
+    private static final String TAG = "ActivitySearch";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +43,9 @@ public class ActivitySearch extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                search(query);
                 return true;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 search(newText);
