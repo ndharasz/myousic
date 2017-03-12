@@ -30,7 +30,6 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     private static final String TAG = "ActivityPartyAdmin";
     private FirebaseDatabase db;
     DatabaseReference currParty;
-    DatabaseReference background;
     private String authToken;
 
     TextView idField;
@@ -79,6 +78,8 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     @Override
     public void onDestroy() {
         audioControllerInstance.destroy();
+        String id = getSharedPreferences("Party", Context.MODE_PRIVATE).getString("party_id", "");
+        FirebaseDatabase.getInstance().getReference().child("parties").child(id).removeValue();
         super.onDestroy();
     }
 

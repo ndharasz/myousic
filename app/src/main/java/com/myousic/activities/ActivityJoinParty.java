@@ -30,7 +30,7 @@ public class ActivityJoinParty extends AppCompatActivity {
 
     protected void join(View v) {
         //get input part id field and check db for it
-        final String id = partyIDField.getText().toString();
+        final String id = partyIDField.getText().toString().toLowerCase();
         db.getReference().child("parties").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
