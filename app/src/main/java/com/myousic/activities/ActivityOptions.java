@@ -15,6 +15,7 @@ public class ActivityOptions extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
+        findViewById(R.id.party_name).setVisibility(View.GONE);
     }
 
     @Override

@@ -112,7 +112,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                         new CustomAudioController.SongFinishedListener() {
                             @Override
                             public void onSongFinished() {
-                                play();
+                                next();
                             }
                         });
             }
