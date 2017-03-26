@@ -32,6 +32,10 @@ public class LocalPlaylistController implements Iterable<Song> {
         return instance;
     }
 
+    public void destroy() {
+        playlist.clear();
+    }
+
     public void move(int oldPos, int newPos) {
         Song song = playlist.remove(oldPos);
         playlist.add(newPos, song);

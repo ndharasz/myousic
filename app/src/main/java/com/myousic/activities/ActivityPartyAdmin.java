@@ -1,10 +1,13 @@
 package com.myousic.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -80,7 +83,33 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         audioControllerInstance.destroy();
         String id = getSharedPreferences("Party", Context.MODE_PRIVATE).getString("party_id", "");
         FirebaseDatabase.getInstance().getReference().child("parties").child(id).removeValue();
+        LocalPlaylistController.getInstance().destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        final View dialogView = LayoutInflater.from(ActivityPartyAdmin.this)
+                .inflate(R.layout.layout_confirmation, null);
+        ((TextView) dialogView.findViewById(R.id.warning_message)).setText(
+                "Exiting this screen will delete your party information."
+        );
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
+                ActivityPartyAdmin.this, android.R.style.Theme_Holo_Dialog);
+        dialogBuilder.setTitle("Are you sure?");
+        dialogBuilder.setView(dialogView);
+
+        dialogBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+        dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ActivityPartyAdmin.super.onBackPressed();
+            }
+        });
+        dialogBuilder.create().show();
     }
 
     protected void idSetup() {
