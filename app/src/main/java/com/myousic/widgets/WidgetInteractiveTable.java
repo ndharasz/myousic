@@ -31,6 +31,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class WidgetInteractiveTable extends TableLayout {
     private static final String TAG = "WidgetInteractiveTable";
     private boolean empty = true;
+    private boolean deletable = true;
 
     public interface OnOrderAlteredListener {
         public void onOrderAltered(Song song, int oldPos, int newPos);
@@ -92,13 +93,15 @@ public class WidgetInteractiveTable extends TableLayout {
             dialogBuilder.setTitle("Song Information");
             dialogBuilder.setView(dialogView);
 
-            dialogBuilder.setNegativeButton("DELETE", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    onSongDeletedListener.onSongDeleted(widgetSongRow.getSong(), widgetSongRow.getIndex());
-                    removeView(widgetSongRow);
-                }
-            });
+            if (deletable) {
+                dialogBuilder.setNegativeButton("DELETE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onSongDeletedListener.onSongDeleted(widgetSongRow.getSong(), widgetSongRow.getIndex());
+                        removeView(widgetSongRow);
+                    }
+                });
+            }
             dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -181,6 +184,10 @@ public class WidgetInteractiveTable extends TableLayout {
         songLongClickListener = null;
     }
 
+    public void disableDelete() {
+        deletable = false;
+    }
+
     @Override
     public void addView(View v, int index) {
         if (v instanceof TextView) {
@@ -193,7 +200,6 @@ public class WidgetInteractiveTable extends TableLayout {
         }
         if (empty) {
             removeEmptyMessage();
-            empty = false;
         }
         WidgetSongRow widgetSongRow = (WidgetSongRow) v;
         widgetSongRow.setIndex(index);
@@ -210,7 +216,6 @@ public class WidgetInteractiveTable extends TableLayout {
         if (v instanceof WidgetSongRow) {
             if (empty) {
                 removeEmptyMessage();
-                empty = false;
             }
             WidgetSongRow widgetSongRow = (WidgetSongRow) v;
             widgetSongRow.setIndex(getChildCount());
@@ -245,10 +250,12 @@ public class WidgetInteractiveTable extends TableLayout {
     }
 
     private void displayEmptyMessage() {
+        empty = true;
         tableEmptyListener.OnTableEmptied();
     }
 
     private void removeEmptyMessage() {
+        empty = false;
         tableOccupiedListener.OnTableOccupied();
     }
 }

@@ -11,6 +11,7 @@
     <string name="search_hint">Song, artist, or album</string>
     <string name="table_empty_main">No songs queued.  Add a song to listen to it next!</string>
     <string name="table_empty_bg">Create or import a background playlist to avoid awkward silence.</string>
+    <string name="click_instructions">Click a title to add it to the party queue.</string>
 
     <string name="table_song">Song</string>
     <string name="table_artist">Artist</string>
@@ -28,7 +29,7 @@
     <string name="change_party_warning">Warning: changing the party ID will delete the old party!</string>
     <string name="change_party">Change Party ID</string>
 
-    <string name="not_logged_in_1">Please log in to your spotify account.</string>
+    <string name="not_logged_in_1">Please log in to your Spotify account.</string>
     <string name="not_logged_in_2">Login</string>
     <string name="not_logged_in_3">Note: a premium account is required for creating a party.</string>
 </resources>

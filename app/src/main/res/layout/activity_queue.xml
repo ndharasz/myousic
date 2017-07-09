@@ -32,12 +32,22 @@
         android:textColor="@color/colorPrimaryDark"
         android:onClick="addSong"/>
 
+    <TextView
+        android:id="@+id/empty_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/table_empty_main"
+        android:textAlignment="center"
+        android:textSize="@dimen/table_text"
+        android:padding="@dimen/queue_padding"
+        android:textColor="@color/colorAccent"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="vertical">
-        <TableLayout
+        <com.myousic.widgets.WidgetInteractiveTable
             android:id="@+id/queue_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -45,7 +55,7 @@
             android:showDividers="middle"
             android:divider="@drawable/row_shape">
 
-        </TableLayout>
+        </com.myousic.widgets.WidgetInteractiveTable>
     </ScrollView>
 
     <RelativeLayout

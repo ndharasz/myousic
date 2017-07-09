@@ -41,6 +41,7 @@ public class CustomQueueEventListener implements ChildEventListener {
 
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        Log.d(TAG, "Populating table with song");
         if (dataSnapshot.getKey().equals("current")) {
             return;
         }
