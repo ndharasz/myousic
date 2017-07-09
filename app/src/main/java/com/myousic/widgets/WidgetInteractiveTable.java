@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.provider.ContactsContract;
@@ -21,12 +22,15 @@ import com.myousic.activities.ActivityBackgroundPlaylist;
 import com.myousic.models.Song;
 import com.myousic.models.WebAPIWrapper;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by brian on 3/11/17.
  */
 
 public class WidgetInteractiveTable extends TableLayout {
     private static final String TAG = "WidgetInteractiveTable";
+    private boolean empty = true;
 
     public interface OnOrderAlteredListener {
         public void onOrderAltered(Song song, int oldPos, int newPos);
@@ -34,6 +38,14 @@ public class WidgetInteractiveTable extends TableLayout {
 
     public interface OnSongDeletedListener {
         public void onSongDeleted(Song song, int pos);
+    }
+
+    public interface TableEmptyListener {
+        public void OnTableEmptied();
+    }
+
+    public interface TableOccupiedListener {
+        public void OnTableOccupied();
     }
 
     private OnOrderAlteredListener onOrderAlteredListener = new OnOrderAlteredListener() {
@@ -46,6 +58,20 @@ public class WidgetInteractiveTable extends TableLayout {
     private OnSongDeletedListener onSongDeletedListener = new OnSongDeletedListener() {
         @Override
         public void onSongDeleted(Song song, int pos) {
+            return;
+        }
+    };
+
+    private TableEmptyListener tableEmptyListener = new TableEmptyListener() {
+        @Override
+        public void OnTableEmptied() {
+            return;
+        }
+    };
+
+    private TableOccupiedListener tableOccupiedListener = new TableOccupiedListener() {
+        @Override
+        public void OnTableOccupied() {
             return;
         }
     };
@@ -81,7 +107,12 @@ public class WidgetInteractiveTable extends TableLayout {
             });
             final AlertDialog alertDialog = dialogBuilder.create();
 
-            instance.getLargeAlbumCover(song.getUri(), new WebAPIWrapper.AlbumCoverListener() {
+            Context context = getContext();
+
+            SharedPreferences prefs = context.getSharedPreferences("loginPrefs", MODE_PRIVATE);
+            final String token = prefs.getString("token", null);
+
+            instance.getLargeAlbumCover(token, song.getUri(), new WebAPIWrapper.AlbumCoverListener() {
                 @Override
                 public void onResponse(Bitmap bitmap) {
                     ((ImageView) dialogView.findViewById(R.id.album_art)).setImageBitmap(bitmap);
@@ -122,10 +153,12 @@ public class WidgetInteractiveTable extends TableLayout {
 
     public WidgetInteractiveTable(Context context) {
         super(context);
+        displayEmptyMessage();
     }
 
     public WidgetInteractiveTable(Context context, AttributeSet attrs) {
         super(context, attrs);
+        displayEmptyMessage();
     }
 
     public void setOnOrderAlteredListener(OnOrderAlteredListener onOrderAlteredListener) {
@@ -136,15 +169,31 @@ public class WidgetInteractiveTable extends TableLayout {
         this.onSongDeletedListener = onSongDeletedListener;
     }
 
+    public void setTableEmptyListener(TableEmptyListener tableEmptyListener) {
+        this.tableEmptyListener = tableEmptyListener;
+    }
+
+    public void setTableOccupiedListener(TableOccupiedListener tableOccupiedListener) {
+        this.tableOccupiedListener = tableOccupiedListener;
+    }
+
     public void disableDragAndDrop() {
         songLongClickListener = null;
     }
 
     @Override
     public void addView(View v, int index) {
+        if (v instanceof TextView) {
+            super.addView(v, index);
+            return;
+        }
         if (!(v instanceof WidgetSongRow)) {
             Log.d(TAG, "Attempt was made to add something other than a WidgetSongRow to the table");
             return;
+        }
+        if (empty) {
+            removeEmptyMessage();
+            empty = false;
         }
         WidgetSongRow widgetSongRow = (WidgetSongRow) v;
         widgetSongRow.setIndex(index);
@@ -158,29 +207,48 @@ public class WidgetInteractiveTable extends TableLayout {
 
     @Override
     public void addView(View v) {
-        if (!(v instanceof WidgetSongRow)) {
+        if (v instanceof WidgetSongRow) {
+            if (empty) {
+                removeEmptyMessage();
+                empty = false;
+            }
+            WidgetSongRow widgetSongRow = (WidgetSongRow) v;
+            widgetSongRow.setIndex(getChildCount());
+            super.addView(v);
+            v.setOnClickListener(songClickListener);
+            v.setOnLongClickListener(songLongClickListener);
+            v.setOnDragListener(songDragListener);
+        } else if (v instanceof TextView) {
+            super.addView(v);
+        } else {
             Log.d(TAG, "Attempt was made to add something other than a WidgetSongRow to the table");
             return;
         }
-        WidgetSongRow widgetSongRow = (WidgetSongRow) v;
-        widgetSongRow.setIndex(getChildCount());
-        super.addView(v);
-        v.setOnClickListener(songClickListener);
-        v.setOnLongClickListener(songLongClickListener);
-        v.setOnDragListener(songDragListener);
     }
 
     @Override
     public void removeView(View v) {
         if (!(v instanceof WidgetSongRow)) {
-            Log.d(TAG, "Attempt was made to add something other than a WidgetSongRow to the table");
+            Log.d(TAG, "Attempt was made to remove something other than a WidgetSongRow to the table");
             return;
         }
         super.removeView(v);
-        for (int i = 0; i < getChildCount(); i++) {
-            WidgetSongRow child = (WidgetSongRow) getChildAt(i);
-            if (child != null)
-                child.setIndex(i);
+        if (getChildCount() == 0) {
+            displayEmptyMessage();
+        } else {
+            for (int i = 0; i < getChildCount(); i++) {
+                WidgetSongRow child = (WidgetSongRow) getChildAt(i);
+                if (child != null)
+                    child.setIndex(i);
+            }
         }
+    }
+
+    private void displayEmptyMessage() {
+        tableEmptyListener.OnTableEmptied();
+    }
+
+    private void removeEmptyMessage() {
+        tableOccupiedListener.OnTableOccupied();
     }
 }

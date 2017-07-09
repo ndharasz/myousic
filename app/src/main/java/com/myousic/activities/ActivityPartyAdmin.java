@@ -65,6 +65,19 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                 currParty.child(String.valueOf(queuedSong.getTimestamp())).removeValue();
             }
         });
+        table.setTableEmptyListener(new WidgetInteractiveTable.TableEmptyListener() {
+            @Override
+            public void OnTableEmptied() {
+                findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
+            }
+        });
+
+        table.setTableOccupiedListener(new WidgetInteractiveTable.TableOccupiedListener() {
+            @Override
+            public void OnTableOccupied() {
+                findViewById(R.id.empty_message).setVisibility(View.GONE);
+            }
+        });
 
         idSetup();
         buttonSetup();

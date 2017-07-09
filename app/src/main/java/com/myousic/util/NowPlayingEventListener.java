@@ -1,11 +1,10 @@
 package com.myousic.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,6 +14,8 @@ import com.google.firebase.database.DatabaseError;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
 import com.myousic.models.WebAPIWrapper;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by brian on 2/14/17.
@@ -41,7 +42,9 @@ public class NowPlayingEventListener implements ChildEventListener {
     }
 
     private void displayAlbumCover(String uri) {
-        WebAPIWrapper.getInstance(context).getAlbumCover(uri, new WebAPIWrapper.AlbumCoverListener() {
+        SharedPreferences prefs = context.getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        final String token = prefs.getString("token", null);
+        WebAPIWrapper.getInstance(context).getAlbumCover(token, uri, new WebAPIWrapper.AlbumCoverListener() {
             @Override
             public void onResponse(Bitmap bitmap) {
                 song_img.setImageBitmap(bitmap);

@@ -1,6 +1,7 @@
 package com.myousic.activities;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,9 +56,11 @@ public class ActivitySearch extends AppCompatActivity {
     }
 
     protected void search(String query) {
+        SharedPreferences prefs = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        final String token = prefs.getString("token", null);
         tableLayout.removeAllViews();
         WebAPIWrapper webAPIWrapper = WebAPIWrapper.getInstance(this);
-        webAPIWrapper.search(query, TRACK, new WebAPIWrapper.SearchResultResponseListener() {
+        webAPIWrapper.search(token, query, TRACK, new WebAPIWrapper.SearchResultResponseListener() {
             @Override
             public void onResponse(List<Song> songs) {
                 for (Song result : songs) {

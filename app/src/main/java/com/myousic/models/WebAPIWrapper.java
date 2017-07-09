@@ -108,7 +108,8 @@ public class WebAPIWrapper {
     }
 
     // This needs to take in a functional interface because this thread is non-blocking.
-    public void search(String query, String type, final SearchResultResponseListener searchResultResponseListener) {
+    public void search(final String authToken, String query, String type,
+                       final SearchResultResponseListener searchResultResponseListener) {
         Log.d(TAG, "Initiating request");
         // Maybe better sanitation should happen
         if (query.contains("&")) {
@@ -116,7 +117,7 @@ public class WebAPIWrapper {
         }
         String url = "https://api.spotify.com/v1/search?q=" + query.replaceAll(" ", "%20") + "&type=" + type;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+        JsonObjectRequestWithAuthHeader jsonObjectRequest = new JsonObjectRequestWithAuthHeader(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -141,15 +142,16 @@ public class WebAPIWrapper {
             public void onErrorResponse(VolleyError error) {
                 Log.d(TAG, "Error retrieving JSON request");
             }
-        });
+        }, authToken);
         queue.add(jsonObjectRequest);
     }
 
-    public void getAlbumCover(String uri, final AlbumCoverListener albumCoverListener) {
+    public void getAlbumCover(final String authToken,
+                              String uri, final AlbumCoverListener albumCoverListener) {
         uri = uri.substring(uri.lastIndexOf(":") + 1, uri.length());
         String url = "https://api.spotify.com/v1/tracks/" + uri;
         Log.d(TAG, url);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+        JsonObjectRequestWithAuthHeader jsonObjectRequest = new JsonObjectRequestWithAuthHeader(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -167,15 +169,16 @@ public class WebAPIWrapper {
             public void onErrorResponse(VolleyError error) {
                 Log.d(TAG, "Error retrieving album art request");
             }
-        });
+        }, authToken);
         queue.add(jsonObjectRequest);
     }
 
-    public void getLargeAlbumCover(String uri, final AlbumCoverListener albumCoverListener) {
+    public void getLargeAlbumCover(final String authToken,
+                                   String uri, final AlbumCoverListener albumCoverListener) {
         uri = uri.substring(uri.lastIndexOf(":") + 1, uri.length());
         String url = "https://api.spotify.com/v1/tracks/" + uri;
         Log.d(TAG, url);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+        JsonObjectRequestWithAuthHeader jsonObjectRequest = new JsonObjectRequestWithAuthHeader(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -193,7 +196,7 @@ public class WebAPIWrapper {
             public void onErrorResponse(VolleyError error) {
                 Log.d(TAG, "Error retrieving album art request");
             }
-        });
+        }, authToken);
         queue.add(jsonObjectRequest);
     }
 

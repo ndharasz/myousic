@@ -1,6 +1,7 @@
 package com.myousic.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.myousic.widgets.WidgetSongRow;
 
 import java.util.Queue;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.myousic.R.layout.layout_song_row;
 
 /**
@@ -48,7 +50,10 @@ public class CustomQueueEventListener implements ChildEventListener {
         row.setSong(result);
         ((TextView)row.findViewById(R.id.song_name)).setText(result.getName());
         ((TextView)row.findViewById(R.id.song_artist)).setText(result.getArtist());
-        WebAPIWrapper.getInstance(context).getAlbumCover(result.getUri()  ,
+
+        SharedPreferences prefs = context.getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        final String token = prefs.getString("token", null);
+        WebAPIWrapper.getInstance(context).getAlbumCover(token, result.getUri(),
                 new WebAPIWrapper.AlbumCoverListener() {
                     @Override
                     public void onResponse(Bitmap bitmap) {

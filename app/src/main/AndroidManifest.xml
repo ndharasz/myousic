@@ -15,11 +15,6 @@
         <activity
             android:name=".activities.ActivityHome"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
@@ -45,7 +40,14 @@
         <activity android:name=".activities.ActivityBackgroundPlaylist" />
         <activity android:name=".activities.ActivityPartyName" />
         <activity android:name=".activities.ActivityBlacklist" />
-        <activity android:name=".activities.ActivityBackgroundPlaylistSearch"></activity>
+        <activity android:name=".activities.ActivityBackgroundPlaylistSearch" />
+        <activity android:name=".activities.ActivityNotLoggedIn">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
