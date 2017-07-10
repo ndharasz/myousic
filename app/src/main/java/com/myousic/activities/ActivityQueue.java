@@ -10,12 +10,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.myousic.R;
+import com.myousic.models.QueuedSong;
+import com.myousic.models.Song;
 import com.myousic.util.CustomQueueEventListener;
 import com.myousic.util.NowPlayingEventListener;
+import com.myousic.util.SearchController;
 import com.myousic.widgets.WidgetInteractiveTable;
 import com.myousic.widgets.WidgetSongRow;
 
@@ -23,6 +27,7 @@ public class ActivityQueue extends AppCompatActivity {
     private String TAG = "ActivityQueue";
     private CustomQueueEventListener customQueueEventListener;
     private DatabaseReference databaseReference;
+    private String partyID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +53,7 @@ public class ActivityQueue extends AppCompatActivity {
         });
 
         //get party id from shared prefs
-        String partyID = getSharedPreferences("Party", Context.MODE_PRIVATE).getString("party_id", null);
+        partyID = getSharedPreferences("Party", Context.MODE_PRIVATE).getString("party_id", null);
         if (partyID == null) {
             Log.d(TAG, "Party ID somehow not set");
             Intent joinPartyIntent = new Intent(this, ActivityJoinParty.class);
@@ -66,6 +71,18 @@ public class ActivityQueue extends AppCompatActivity {
     }
 
     protected void addSong(View v) {
+        SearchController.getInstance().setSearchCallback(new SearchController.SearchCallback() {
+            @Override
+            public void onSongChosen(Song song) {
+                QueuedSong queuedSong = (QueuedSong) song;
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference databaseReference = database.getReference("parties").child(partyID).child("queue")
+                        .child(Long.toString(queuedSong.getTimestamp()));
+                databaseReference.setValue(queuedSong);
+                Toast toast = Toast.makeText(ActivityQueue.this, "Song added: " + queuedSong.getName(), Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
         Intent searchIntent = new Intent(this, ActivitySearch.class);
         startActivity(searchIntent);
     }

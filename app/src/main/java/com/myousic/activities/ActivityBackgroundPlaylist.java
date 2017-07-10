@@ -20,6 +20,7 @@ import com.myousic.models.Playlist;
 import com.myousic.models.Song;
 import com.myousic.models.WebAPIWrapper;
 import com.myousic.util.LocalPlaylistController;
+import com.myousic.util.SearchController;
 import com.myousic.widgets.WidgetInteractiveTable;
 import com.myousic.widgets.WidgetPlaylistRow;
 import com.myousic.widgets.WidgetSongRow;
@@ -140,8 +141,15 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
     }
 
     protected void addSong(View v) {
+        SearchController.getInstance().setSearchCallback(new SearchController.SearchCallback() {
+            @Override
+            public void onSongChosen(Song song) {
+                LocalPlaylistController playlistController = LocalPlaylistController.getInstance();
+                playlistController.push(song);
+            }
+        });
         Intent backgroundPlaylistSearchIntent = new Intent(ActivityBackgroundPlaylist.this,
-                ActivityBackgroundPlaylistSearch.class);
+                ActivitySearch.class);
         startActivity(backgroundPlaylistSearchIntent);
     }
 }

@@ -20,18 +20,21 @@ import com.myousic.R;
 import com.myousic.models.QueuedSong;
 import com.myousic.models.Song;
 import com.myousic.models.WebAPIWrapper;
+import com.myousic.util.SearchController;
 import com.myousic.widgets.WidgetSongRow;
 
 import java.util.List;
 
 public class ActivitySearch extends AppCompatActivity {
+    private static final String TAG = "ActivitySearch";
+
     private SearchView searchView;
     private TableLayout tableLayout;
     private final String ARTIST = "artist";
     private final String TRACK = "track";
     private final String ALBUM = "album";
 
-    private static final String TAG = "ActivitySearch";
+    private SearchController searchControllerInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,14 @@ public class ActivitySearch extends AppCompatActivity {
                 return true;
             }
         });
+
+        searchControllerInstance = SearchController.getInstance();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        searchControllerInstance.resetCallback();
     }
 
     protected void search(String query) {
@@ -90,12 +101,16 @@ public class ActivitySearch extends AppCompatActivity {
         } try {
             WidgetSongRow widgetSongRow = (WidgetSongRow) v;
             QueuedSong queuedSong = new QueuedSong(widgetSongRow.getSong());
+            searchControllerInstance.songChosen(queuedSong);
+
+            /* copy this to the main activity
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference databaseReference = database.getReference("parties").child(partyID).child("queue")
                     .child(Long.toString(queuedSong.getTimestamp()));
             databaseReference.setValue(queuedSong);
             Toast toast = Toast.makeText(this, "Song added: " + queuedSong.getName(), Toast.LENGTH_SHORT);
             toast.show();
+            */
         } catch (Exception e) {
             Log.d(TAG, "Database error. Song not queued: " + e.toString());
         }
