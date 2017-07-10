@@ -103,7 +103,7 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
             }
         });
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, android.R.style.Theme_Holo_Dialog);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.thinDialog);
         alertDialogBuilder.setView(playlistsView);
         alertDialogBuilder.setTitle("Playlists");
         alertDialogBuilder.setPositiveButton("CLOSE", new DialogInterface.OnClickListener() {

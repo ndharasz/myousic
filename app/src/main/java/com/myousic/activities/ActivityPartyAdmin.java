@@ -1,5 +1,6 @@
 package com.myousic.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -108,7 +109,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                 "Exiting this screen will delete your party information."
         );
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
-                ActivityPartyAdmin.this, android.R.style.Theme_Holo_Dialog);
+                ActivityPartyAdmin.this, R.style.thinDialog);
         dialogBuilder.setTitle("Are you sure?");
         dialogBuilder.setView(dialogView);
 
@@ -217,9 +218,10 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                     Log.d(TAG, "Song: " + nextSong.getName());
                     playAndUpdateDatabase(nextSong);
                 } else {
-                    Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
                     play.setVisibility(View.VISIBLE);
                     pause.setVisibility(View.GONE);
+                    Intent searchIntent = new Intent(this, ActivitySearch.class);
+                    startActivity(searchIntent);
                 }
             }
         } else {
@@ -264,7 +266,8 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                 Log.d(TAG, "Song: " + nextSong.getName());
                 playAndUpdateDatabase(nextSong);
             } else {
-                Toast.makeText(this, "Queue a song first!", Toast.LENGTH_SHORT).show();
+                Intent searchIntent = new Intent(this, ActivitySearch.class);
+                startActivity(searchIntent);
             }
         }
     }
