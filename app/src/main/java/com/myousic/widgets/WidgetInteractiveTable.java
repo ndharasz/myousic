@@ -89,7 +89,7 @@ public class WidgetInteractiveTable extends TableLayout {
             ((TextView) dialogView.findViewById(R.id.song_artist)).setText(song.getArtist());
             WebAPIWrapper instance = WebAPIWrapper.getInstance(getContext());
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
-                    getContext(), android.R.style.Theme_Holo_Dialog);
+                    getContext(), R.style.thinDialog);
             dialogBuilder.setTitle("Song Information");
             dialogBuilder.setView(dialogView);
 

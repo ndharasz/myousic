@@ -15,14 +15,14 @@ import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
 import static com.spotify.sdk.android.authentication.LoginActivity.REQUEST_CODE;
 
-public class ActivityNotLoggedIn extends AppCompatActivity {
+public class ActivitySplash extends AppCompatActivity {
     private SharedPreferences loginPrefs;
     private SharedPreferences.Editor loginEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_not_logged_in);
+        setContentView(R.layout.activity_splash);
         getSharedPreferences("loginPrefs", Context.MODE_PRIVATE).getString("loggedIn", "false");
         loginPrefs = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginEdit = loginPrefs.edit();
