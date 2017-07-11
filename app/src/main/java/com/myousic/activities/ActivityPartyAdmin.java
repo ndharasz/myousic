@@ -25,6 +25,7 @@ import com.myousic.util.CustomAudioController;
 import com.myousic.util.CustomQueueEventListener;
 import com.myousic.util.LocalPlaylistController;
 import com.myousic.util.NowPlayingEventListener;
+import com.myousic.util.SearchController;
 import com.myousic.widgets.WidgetInteractiveTable;
 import com.spotify.sdk.android.player.Spotify;
 
@@ -35,6 +36,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     private FirebaseDatabase db;
     DatabaseReference currParty;
     private String authToken;
+    private String partyId;
 
     TextView idField;
 
@@ -140,6 +142,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         currParty.addChildEventListener(customQueueEventListener);
         idField = (TextView)findViewById(R.id.party_id_field);
         idField.setText(id);
+        partyId = id;
     }
 
     private void createPlayer() {
@@ -193,7 +196,20 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     }
 
     public void addSong(View v) {
-        Log.d(TAG, "should not hit this");
+        SearchController searchController = SearchController.getInstance();
+        searchController.setSearchCallback(new SearchController.SearchCallback() {
+            @Override
+            public void onSongChosen(Song song) {
+                QueuedSong queuedSong = (QueuedSong) song;
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference databaseReference = database.getReference("parties").child(partyId).child("queue")
+                        .child(Long.toString(queuedSong.getTimestamp()));
+                databaseReference.setValue(queuedSong);
+                Toast toast = Toast.makeText(ActivityPartyAdmin.this, "Song added: " + queuedSong.getName(), Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+        searchController.setInstructions("Tap a song to add it to the queue");
         Intent searchIntent = new Intent(this, ActivitySearch.class);
         startActivity(searchIntent);
     }

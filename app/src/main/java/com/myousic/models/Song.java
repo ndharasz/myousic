@@ -33,6 +33,11 @@ public class Song {
         return uri.equals(that.uri);
     }
 
+    @Override
+    public int hashCode() {
+        return 13 * song.hashCode() + 71 * artist.hashCode();
+    }
+
     public String getName() {
         return song;
     }

@@ -42,6 +42,7 @@
         <activity android:name=".activities.ActivityBlacklist" />
         <activity android:name=".activities.ActivityBackgroundPlaylistSearch" />
         <activity android:name=".activities.ActivitySplash">
+        <activity android:name=".activities.ActivityNotLoggedIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
