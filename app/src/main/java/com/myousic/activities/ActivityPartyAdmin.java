@@ -129,15 +129,13 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     }
 
     protected void idSetup() {
-        //generate random party id hex string
-        Random rnd = new Random(System.currentTimeMillis());
-        int x = rnd.nextInt(65536); //Between 0-255
-        String id = Integer.toHexString(x);
-        //store in shared preferences
-        getSharedPreferences("Party", Context.MODE_PRIVATE)
-                .edit().putString("party_id", id).commit();
+        //get from shared preferences
+        String id = getSharedPreferences("Party", MODE_PRIVATE).getString("party_id", null);
+        if (id == null) {
+            onDestroy();
+        }
+
         //store in db
-        db.getReference().child("parties").child(id).setValue("");
         currParty = db.getReference().child("parties").child(id).child("queue").getRef();
         currParty.addChildEventListener(customQueueEventListener);
         idField = (TextView)findViewById(R.id.party_id_field);
