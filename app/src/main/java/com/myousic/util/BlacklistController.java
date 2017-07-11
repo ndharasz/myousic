@@ -30,7 +30,7 @@ public class BlacklistController {
     }
 
     public void add(Song song) {
-        dref.child("" + song.hashCode()).setValue("true");
+        dref.child("" + song.hashCode()).setValue(song);
     }
 
     public void remove(Song song) {

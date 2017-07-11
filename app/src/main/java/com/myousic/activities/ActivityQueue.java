@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
 import com.myousic.models.Song;
+import com.myousic.util.BlacklistController;
 import com.myousic.util.CustomQueueEventListener;
 import com.myousic.util.NowPlayingEventListener;
 import com.myousic.util.SearchController;
@@ -71,18 +72,32 @@ public class ActivityQueue extends AppCompatActivity {
     }
 
     protected void addSong(View v) {
-        SearchController.getInstance().setSearchCallback(new SearchController.SearchCallback() {
+        SearchController searchController = SearchController.getInstance();
+        searchController.setSearchCallback(new SearchController.SearchCallback() {
             @Override
             public void onSongChosen(Song song) {
-                QueuedSong queuedSong = (QueuedSong) song;
+                final QueuedSong queuedSong = (QueuedSong) song;
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference databaseReference = database.getReference("parties").child(partyID).child("queue")
+                final DatabaseReference databaseReference = database.getReference("parties").child(partyID).child("queue")
                         .child(Long.toString(queuedSong.getTimestamp()));
-                databaseReference.setValue(queuedSong);
-                Toast toast = Toast.makeText(ActivityQueue.this, "Song added: " + queuedSong.getName(), Toast.LENGTH_SHORT);
-                toast.show();
+                BlacklistController blacklistController = new BlacklistController(partyID);
+                blacklistController.isBlacklisted(queuedSong, new BlacklistController.BlacklistedCallback() {
+                    @Override
+                    public void onBlacklistedCallback(boolean isBlacklisted) {
+                        if (isBlacklisted) {
+                            Toast toast = Toast.makeText(ActivityQueue.this, "This song is banned from this party", Toast.LENGTH_SHORT);
+                            toast.show();
+                        } else {
+                            databaseReference.setValue(queuedSong);
+                            Toast toast = Toast.makeText(ActivityQueue.this, "Song added: " + queuedSong.getName(), Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    }
+                });
+
             }
         });
+        searchController.setInstructions("Tap a song to add it to the queue");
         Intent searchIntent = new Intent(this, ActivitySearch.class);
         startActivity(searchIntent);
     }

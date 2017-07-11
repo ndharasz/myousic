@@ -10,13 +10,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="com.myousic.activities.ActivityBlacklist"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimaryDark">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/blacklist"
         android:textSize="@dimen/title_1"
+        android:textColor="@color/colorAccent"
         android:textAlignment="center"/>
 
     <Button
@@ -27,10 +28,10 @@
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         android:text="@string/add"
         android:textSize="@dimen/big_button_text"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorPrimaryDark"
         android:onClick="addSong"/>
 
     <ScrollView
@@ -38,13 +39,15 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="vertical">
-        <TableLayout
-            android:id="@+id/queue_table"
+        <com.myousic.widgets.WidgetInteractiveTable
+            android:id="@+id/blacklist_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/queue_padding">
+            android:paddingLeft="@dimen/queue_padding"
+            android:showDividers="middle"
+            android:divider="@drawable/row_shape">
 
-        </TableLayout>
+        </com.myousic.widgets.WidgetInteractiveTable>
     </ScrollView>
 
 </LinearLayout>

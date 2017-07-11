@@ -36,12 +36,24 @@ public class SearchController {
     }
 
     private SearchCallback searchCallback;
+    private String instructions;
 
     /*
      * This is called by the main activity
      */
     public void setSearchCallback(SearchCallback searchCallback) {
         this.searchCallback = searchCallback;
+    }
+
+    /*
+     * Optionally called by the main activity
+     */
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    public String getInstuctions() {
+        return instructions;
     }
 
     /*
@@ -54,6 +66,7 @@ public class SearchController {
                 throw new NoCallbackSpecifiedException("Callback must be specified before search activity is called.");
             }
         };
+        instructions = "";
     }
 
     /*

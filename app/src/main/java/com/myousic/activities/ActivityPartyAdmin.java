@@ -195,7 +195,8 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     }
 
     public void addSong(View v) {
-        SearchController.getInstance().setSearchCallback(new SearchController.SearchCallback() {
+        SearchController searchController = SearchController.getInstance();
+        searchController.setSearchCallback(new SearchController.SearchCallback() {
             @Override
             public void onSongChosen(Song song) {
                 QueuedSong queuedSong = (QueuedSong) song;
@@ -207,6 +208,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                 toast.show();
             }
         });
+        searchController.setInstructions("Tap a song to add it to the queue");
         Intent searchIntent = new Intent(this, ActivitySearch.class);
         startActivity(searchIntent);
     }

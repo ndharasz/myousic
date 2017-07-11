@@ -58,6 +58,7 @@ public class ActivitySearch extends AppCompatActivity {
         });
 
         searchControllerInstance = SearchController.getInstance();
+        ((TextView) findViewById(R.id.instructions)).setText(searchControllerInstance.getInstuctions());
     }
 
     @Override

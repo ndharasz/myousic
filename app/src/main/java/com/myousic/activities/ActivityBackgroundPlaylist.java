@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -29,8 +30,8 @@ import java.util.List;
 
 public class ActivityBackgroundPlaylist extends AppCompatActivity {
     private static final String TAG = "ActivityBackgroundPlaylist";
-    WebAPIWrapper instance;
-    WidgetInteractiveTable backgroundSongTable;
+    private WebAPIWrapper instance;
+    private WidgetInteractiveTable backgroundSongTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +124,6 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
             public void onResponse(List<Song> songs) {
                 for (Song song : songs) {
                     addSong(song);
-
                     playlistInstance.push(song);
                 }
             }
@@ -141,13 +141,17 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
     }
 
     protected void addSong(View v) {
-        SearchController.getInstance().setSearchCallback(new SearchController.SearchCallback() {
+        SearchController searchController = SearchController.getInstance();
+        searchController.setSearchCallback(new SearchController.SearchCallback() {
             @Override
             public void onSongChosen(Song song) {
                 LocalPlaylistController playlistController = LocalPlaylistController.getInstance();
                 playlistController.push(song);
+                Toast toast = Toast.makeText(ActivityBackgroundPlaylist.this, "Song added: " + song.getName(), Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
+        searchController.setInstructions("Tap a song to add it to the queue");
         Intent backgroundPlaylistSearchIntent = new Intent(ActivityBackgroundPlaylist.this,
                 ActivitySearch.class);
         startActivity(backgroundPlaylistSearchIntent);
