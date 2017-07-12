@@ -52,12 +52,6 @@ public class ActivityHome extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.thinDialog);
         alertDialogBuilder.setView(partyNameLayout);
         alertDialogBuilder.setTitle("Enter a party name");
-        alertDialogBuilder.setPositiveButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
         alertDialogBuilder.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
             // When you click create...
             @Override
