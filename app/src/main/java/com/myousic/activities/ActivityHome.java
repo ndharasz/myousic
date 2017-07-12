@@ -62,7 +62,8 @@ public class ActivityHome extends AppCompatActivity {
                     public void canCreateCallback(boolean canCreate) {
                         if (canCreate) {
                             // You are given access
-                            newPartyController.create(ActivityHome.this, partyName.getText().toString());
+                            // Save the String as lowercase
+                            newPartyController.create(ActivityHome.this, partyName.getText().toString().toLowerCase());
                             Intent partyAdminIntent = new Intent(ActivityHome.this, ActivityPartyAdmin.class);
                             startActivity(partyAdminIntent);
                         } else {
