@@ -12,6 +12,7 @@
     <string name="table_empty_main">No songs queued.  Add a song to listen to it next!</string>
     <string name="table_empty_bg">Create or import a background playlist to avoid awkward silence.</string>
     <string name="click_instructions">Click a title to add it to the party queue.</string>
+    <string name="choose_party_name">MyParty123</string>
 
     <string name="table_song">Song</string>
     <string name="table_artist">Artist</string>
@@ -24,6 +25,9 @@
     <string name="playlists">Playlists</string>
     <string name="import_playlist">Import</string>
     <string name="blacklist">Blacklist</string>
+    <string name="manage">Manage</string>
+    <string name="delete_queue">Delete Queue</string>
+    <string name="delete_background_playlist">Delete Background Playlist</string>
 
     <string name="enter_party_id">New party ID</string>
     <string name="change_party_warning">Warning: changing the party ID will delete the old party!</string>

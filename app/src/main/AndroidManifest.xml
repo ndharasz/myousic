@@ -14,8 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.ActivityHome"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
             android:launchMode="standard"
@@ -47,6 +46,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.ActivityManageParty"></activity>
     </application>
 
 </manifest>

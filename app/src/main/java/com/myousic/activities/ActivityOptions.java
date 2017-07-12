@@ -25,6 +25,7 @@ public class ActivityOptions extends AppCompatActivity {
         setUnclickedColor(findViewById(R.id.party_name));
         setUnclickedColor(findViewById(R.id.playlist));
         setUnclickedColor(findViewById(R.id.blacklist));
+        setUnclickedColor(findViewById(R.id.manage));
     }
 
     protected void setClickedColor(View v) {
@@ -51,5 +52,11 @@ public class ActivityOptions extends AppCompatActivity {
         setClickedColor(v);
         Intent blacklistIntent =  new Intent(this, ActivityBlacklist.class);
         startActivity(blacklistIntent);
+    }
+
+    protected void manage(View v) {
+        setClickedColor(v);
+        Intent managePartyIntent = new Intent(this, ActivityManageParty.class);
+        startActivity(managePartyIntent);
     }
 }

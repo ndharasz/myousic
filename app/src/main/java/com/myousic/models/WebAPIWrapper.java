@@ -52,6 +52,10 @@ public class WebAPIWrapper {
         void onResponse(List<Playlist> playlists);
     }
 
+    public interface GetUsernameListener {
+        void onResponse(String username);
+    }
+
     private class RetrieveAlbumTask extends AsyncTask<String, Void, Bitmap> {
         private AlbumCoverListener albumCoverListener;
 
@@ -105,6 +109,30 @@ public class WebAPIWrapper {
     private WebAPIWrapper(Context context) {
         this.context = context;
         this.queue = Volley.newRequestQueue(context.getApplicationContext());
+    }
+
+    public void getUsername(final String authToken, final GetUsernameListener getUsernameListener) {
+        String url = "https://api.spotify.com/v1/me";
+        JsonObjectRequestWithAuthHeader jsonObjectRequest = new JsonObjectRequestWithAuthHeader(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String username = response.getString("id");
+                    Log.d(TAG, username);
+                    getUsernameListener.onResponse(username);
+                } catch (JSONException e) {
+                    Log.d(TAG, "Username search unsuccessful");
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "Error retrieving JSON request");
+            }
+        }, authToken);
+        queue.add(jsonObjectRequest);
     }
 
     // This needs to take in a functional interface because this thread is non-blocking.

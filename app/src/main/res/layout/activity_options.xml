@@ -80,6 +80,24 @@
 
         </TableRow>
 
+        <TableRow
+            android:id="@+id/manage"
+            android:padding="@dimen/options_menu_padding"
+            android:onClick="manage">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/big_button_text"
+                android:text="@string/manage"
+                android:textColor="@color/colorAccent"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/right_arrow"/>
+
+        </TableRow>
     </TableLayout>
 
 </LinearLayout>
