@@ -41,7 +41,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
+        android:background="@drawable/button_primary_dark"
         android:text="@string/change_party"
         android:textColor="@color/colorAccent"
         android:onClick="changePartyID"/>
