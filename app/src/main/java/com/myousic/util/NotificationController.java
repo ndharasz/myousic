@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.myousic.R;
+import com.myousic.activities.ActivityPartyAdmin;
 import com.myousic.models.Song;
 
 /**
@@ -21,9 +22,6 @@ public class NotificationController {
     private static int NotificationID = 42069;
     private static NotificationCompat.Builder builder;
     private static RemoteViews notificitionView;
-    private static PendingIntent playPendingIntent;
-    private static PendingIntent pausePendingIntent;
-    private static PendingIntent nextPendingIntent;
     private static NotificationManager mNotificationManager;
     public static final String ACTION_PLAY = "action_play";
     public static final String ACTION_PAUSE = "action_pause";
@@ -57,15 +55,18 @@ public class NotificationController {
     }
 
     public static void init(Context context) {
+        Intent goToInent = new Intent(context, ActivityPartyAdmin.class);
         Intent playIntent = new Intent(ACTION_PLAY);
         Intent pauseIntent = new Intent(ACTION_PAUSE);
         Intent nextIntent = new Intent(ACTION_NEXT);
 
-        playPendingIntent = PendingIntent.getBroadcast(context, 1, playIntent, 0);
-        pausePendingIntent = PendingIntent.getBroadcast(context, 1, pauseIntent, 0);
-        nextPendingIntent = PendingIntent.getBroadcast(context, 1, nextIntent, 0);
+        PendingIntent goToPendingIntent = PendingIntent.getActivity(context, 1, goToInent, 0);
+        PendingIntent playPendingIntent = PendingIntent.getBroadcast(context, 1, playIntent, 0);
+        PendingIntent pausePendingIntent = PendingIntent.getBroadcast(context, 1, pauseIntent, 0);
+        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(context, 1, nextIntent, 0);
 
         notificitionView = new RemoteViews(context.getPackageName(), R.layout.layout_notification);
+        notificitionView.setOnClickPendingIntent(R.id.notification_text, goToPendingIntent);
         notificitionView.setOnClickPendingIntent(R.id.notification_play, playPendingIntent);
         notificitionView.setOnClickPendingIntent(R.id.notification_pause, pausePendingIntent);
         notificitionView.setOnClickPendingIntent(R.id.notification_next, nextPendingIntent);

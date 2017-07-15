@@ -328,8 +328,9 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     private class NotificationNext extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Intent closeDialogs = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+            context.sendBroadcast(closeDialogs);
             next();
         }
-
     }
 }
