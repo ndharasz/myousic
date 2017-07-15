@@ -1,29 +1,15 @@
 package com.myousic.util;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.myousic.R;
 import com.myousic.models.QueuedSong;
-import com.myousic.models.Song;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.Error;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
-
-import java.util.Queue;
 
 public class CustomAudioController {
     private static final String TAG = "CustomAudioController";

@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="auth-1.0.0-alpha">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.spotify.android/auth/1.0.0-alpha/res" />
-      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.spotify.android/auth/1.0.0-alpha/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.android/build-cache/8857e912caa8828d4dc111b5699b313cc936e8a1/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/8857e912caa8828d4dc111b5699b313cc936e8a1/output/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

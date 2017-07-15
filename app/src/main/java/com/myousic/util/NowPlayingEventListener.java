@@ -52,10 +52,9 @@ public class NowPlayingEventListener implements ChildEventListener {
         });
     }
 
-    @Override
-    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+    private void showSong(DataSnapshot dataSnapshot) {
         if (dataSnapshot.getKey().equals("current")) {
-            QueuedSong song = (QueuedSong) dataSnapshot.getValue(QueuedSong.class);
+            QueuedSong song = dataSnapshot.getValue(QueuedSong.class);
             song_name.setText(song.getName());
             song_artist.setText(song.getArtist());
             displayAlbumCover(song.getUri());
@@ -63,13 +62,13 @@ public class NowPlayingEventListener implements ChildEventListener {
     }
 
     @Override
+    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        showSong(dataSnapshot);
+    }
+
+    @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-        if (dataSnapshot.getKey().equals("current")) {
-            QueuedSong song = (QueuedSong) dataSnapshot.getValue(QueuedSong.class);
-            song_name.setText(song.getName());
-            song_artist.setText(song.getArtist());
-            displayAlbumCover(song.getUri());
-        }
+        showSong(dataSnapshot);
     }
 
     @Override
@@ -83,12 +82,7 @@ public class NowPlayingEventListener implements ChildEventListener {
 
     @Override
     public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-        if (dataSnapshot.getKey().equals("current")) {
-            QueuedSong song = (QueuedSong) dataSnapshot.getValue(QueuedSong.class);
-            song_name.setText(song.getName());
-            song_artist.setText(song.getArtist());
-            displayAlbumCover(song.getUri());
-        }
+        showSong(dataSnapshot);
     }
 
     @Override
