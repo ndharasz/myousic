@@ -36,7 +36,8 @@
         android:background="@color/colorAccent"
         android:padding="@dimen/text_box_padding"
         android:hint="@string/enter_party_id"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:singleLine="true"/>
 
     <Button
         android:layout_width="match_parent"

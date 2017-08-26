@@ -2,9 +2,11 @@ package com.myousic.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +26,7 @@ import com.myousic.models.Song;
 import com.myousic.util.CustomAudioController;
 import com.myousic.util.CustomQueueEventListener;
 import com.myousic.util.LocalPlaylistController;
+import com.myousic.util.NotificationController;
 import com.myousic.util.NowPlayingEventListener;
 import com.myousic.util.SearchController;
 import com.myousic.widgets.WidgetInteractiveTable;
@@ -49,6 +52,10 @@ public class ActivityPartyAdmin extends AppCompatActivity {
     CustomAudioController audioControllerInstance;
     CustomQueueEventListener customQueueEventListener;
     NowPlayingEventListener nowPlayingEventListener;
+
+    NotificationPlay notificationPlay;
+    NotificationPause notificationPause;
+    NotificationNext notificationNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +93,13 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         buttonSetup();
         currSongSetup();
 
+        // Init Notification Receivers and register them
+        notificationPlay = new NotificationPlay();
+        notificationPause = new NotificationPause();
+        notificationNext = new NotificationNext();
+        registerReceiver(notificationPlay, new IntentFilter(NotificationController.ACTION_PLAY));
+        registerReceiver(notificationPause, new IntentFilter(NotificationController.ACTION_PAUSE));
+        registerReceiver(notificationNext, new IntentFilter(NotificationController.ACTION_NEXT));
     }
 
     @Override
@@ -224,6 +238,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                 // first get the song out of the queue
                 Log.d(TAG, "Song: " + nextSong.getName());
                 playAndUpdateDatabase(nextSong);
+
             } else {
                 Song song = LocalPlaylistController.getInstance().pop();
                 if (song != null) {
@@ -288,5 +303,31 @@ public class ActivityPartyAdmin extends AppCompatActivity {
 
     private QueuedSong getNextSong() {
         return customQueueEventListener.getNextSong();
+    }
+
+    // Broadcast Receivers for notification actions
+    private class NotificationPlay extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            NotificationController.togglePlayButton(NotificationController.ACTION_PLAY);
+            play();
+        }
+    }
+
+    private class NotificationPause extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            NotificationController.togglePlayButton(NotificationController.ACTION_PAUSE);
+            pause();
+        }
+    }
+
+    private class NotificationNext extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent closeDialogs = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+            context.sendBroadcast(closeDialogs);
+            next();
+        }
     }
 }
