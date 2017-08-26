@@ -1,4 +1,4 @@
-package com.myousic.models;
+package com.myousic.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,6 +13,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.myousic.models.Playlist;
+import com.myousic.models.Song;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +55,7 @@ public class WebAPIWrapper {
     }
 
     public interface GetUsernameListener {
-        void onResponse(String username);
+        void onResponse(String username, boolean isPremium);
     }
 
     private class RetrieveAlbumTask extends AsyncTask<String, Void, Bitmap> {
@@ -118,9 +120,12 @@ public class WebAPIWrapper {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+
                     String username = response.getString("id");
+                    String product = response.getString("product");
+                    Log.d(TAG, product);
                     Log.d(TAG, username);
-                    getUsernameListener.onResponse(username);
+                    getUsernameListener.onResponse(username, product.equals("premium"));
                 } catch (JSONException e) {
                     Log.d(TAG, "Username search unsuccessful");
                 }

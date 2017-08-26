@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.media.Image;
-import android.provider.ContactsContract;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.DragEvent;
@@ -18,9 +16,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.myousic.R;
-import com.myousic.activities.ActivityBackgroundPlaylist;
 import com.myousic.models.Song;
-import com.myousic.models.WebAPIWrapper;
+import com.myousic.util.WebAPIWrapper;
 
 import static android.content.Context.MODE_PRIVATE;
 

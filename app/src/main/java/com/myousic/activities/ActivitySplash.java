@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.myousic.R;
-import com.myousic.models.WebAPIWrapper;
+import com.myousic.util.WebAPIWrapper;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -34,7 +34,7 @@ public class ActivitySplash extends AppCompatActivity {
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(
                 getString(R.string.clientID), AuthenticationResponse.Type.TOKEN,
                 "myousic://callback");
-        builder.setScopes(new String[]{"streaming"});
+        builder.setScopes(new String[]{"streaming", "user-read-private"});
         AuthenticationRequest request = builder.build();
         //open Spotify login activity
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
@@ -56,8 +56,9 @@ public class ActivitySplash extends AppCompatActivity {
                     WebAPIWrapper instance = WebAPIWrapper.getInstance(ActivitySplash.this);
                     instance.getUsername(token, new WebAPIWrapper.GetUsernameListener() {
                         @Override
-                        public void onResponse(String username) {
+                        public void onResponse(String username, boolean isPremium) {
                             loginEdit.putString("username", username).commit();
+                            loginEdit.putBoolean("premium", isPremium).commit();
                         }
                     });
                     Intent activityHomeIntent = new Intent(this, ActivityHome.class);

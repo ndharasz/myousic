@@ -13,7 +13,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
-import com.myousic.models.WebAPIWrapper;
 
 import static android.content.Context.MODE_PRIVATE;
 

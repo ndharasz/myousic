@@ -2,24 +2,19 @@ package com.myousic.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.widget.ImageView;
 import android.widget.SearchView;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
 import com.myousic.models.Song;
-import com.myousic.models.WebAPIWrapper;
+import com.myousic.util.WebAPIWrapper;
 import com.myousic.util.SearchController;
 import com.myousic.widgets.WidgetSongRow;
 

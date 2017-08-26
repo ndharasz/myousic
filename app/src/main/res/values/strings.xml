@@ -33,7 +33,5 @@
     <string name="change_party_warning">Warning: changing the party ID will delete the old party!</string>
     <string name="change_party">Change Party ID</string>
 
-    <string name="not_logged_in_1">Please log in to your Spotify account.</string>
-    <string name="not_logged_in_2">Login</string>
-    <string name="not_logged_in_3">Note: a premium account is required for creating a party.</string>
+    <string name="login">Login to Spotify</string>
 </resources>

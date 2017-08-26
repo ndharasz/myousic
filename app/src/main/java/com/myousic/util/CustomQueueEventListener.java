@@ -3,7 +3,6 @@ package com.myousic.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
@@ -17,10 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.myousic.R;
 import com.myousic.models.QueuedSong;
-import com.myousic.models.WebAPIWrapper;
 import com.myousic.widgets.WidgetSongRow;
-
-import java.util.Queue;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.myousic.R.layout.layout_song_row;
