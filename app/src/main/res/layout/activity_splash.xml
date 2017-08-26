@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@color/colorPrimaryDark"
+        android:background="@drawable/button_primary_dark"
         android:text="@string/not_logged_in_2"
         android:textSize="@dimen/big_button_text"
         android:textColor="@color/colorAccent"

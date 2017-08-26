@@ -2,6 +2,7 @@
 <resources>
     <color name="dividerColor">#005177</color>
     <color name="colorPrimary">#FFD480</color>
+    <color name="colorPrimaryButtonPressed">#FFCC66</color>
     <color name="colorPrimaryDark">#007399</color>
     <color name="colorPrimaryDarkSelected">#005177</color>
     <color name="Dark">#000000</color>
