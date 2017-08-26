@@ -1,6 +1,7 @@
 package com.myousic.util;
 
 import android.R.drawable;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -29,13 +30,18 @@ public class NotificationController {
     private static boolean isInitialized = false;
 
     public static void notify(Context context, Song song) {
-
         if(!isInitialized) {
             init(context);
         }
         notificitionView.setTextViewText(R.id.notification_title, song.getName());
         notificitionView.setTextViewText(R.id.notification_artist, song.getArtist());
 
+        mNotificationManager.notify(NotificationID, builder.build());
+    }
+
+    public static void updateImage(Bitmap image) {
+        builder.setLargeIcon(image);
+        notificitionView.setImageViewBitmap(R.id.notification_image, image);
         mNotificationManager.notify(NotificationID, builder.build());
     }
 
@@ -60,6 +66,7 @@ public class NotificationController {
         Intent pauseIntent = new Intent(ACTION_PAUSE);
         Intent nextIntent = new Intent(ACTION_NEXT);
 
+        // Use AdminActivity broadcasts to bring up activity from notification
         PendingIntent goToPendingIntent = PendingIntent.getActivity(context, 1, goToInent, 0);
         PendingIntent playPendingIntent = PendingIntent.getBroadcast(context, 1, playIntent, 0);
         PendingIntent pausePendingIntent = PendingIntent.getBroadcast(context, 1, pauseIntent, 0);
@@ -76,7 +83,8 @@ public class NotificationController {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setSmallIcon(drawable.ic_media_play)
                 .setCustomBigContentView(notificitionView)
-                .setOngoing(true);
+                .setOngoing(true)
+                .setPriority(Notification.PRIORITY_MAX);
 
         mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         isInitialized = true;

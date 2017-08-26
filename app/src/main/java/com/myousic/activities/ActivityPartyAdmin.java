@@ -264,7 +264,6 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         audioControllerInstance.play(nextSong, new CustomAudioController.SongPlayingListener() {
             @Override
             public void onPlaying(QueuedSong song) {
-                NotificationController.notify(getApplicationContext(), song);
                 currParty.child(String.valueOf(song.getTimestamp())).removeValue();
                 song.setTimestamp(Long.MAX_VALUE);
                 currParty.child("current").setValue(song);
@@ -313,7 +312,6 @@ public class ActivityPartyAdmin extends AppCompatActivity {
             NotificationController.togglePlayButton(NotificationController.ACTION_PLAY);
             play();
         }
-
     }
 
     private class NotificationPause extends BroadcastReceiver {
@@ -322,7 +320,6 @@ public class ActivityPartyAdmin extends AppCompatActivity {
             NotificationController.togglePlayButton(NotificationController.ACTION_PAUSE);
             pause();
         }
-
     }
 
     private class NotificationNext extends BroadcastReceiver {

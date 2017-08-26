@@ -48,6 +48,7 @@ public class NowPlayingEventListener implements ChildEventListener {
             @Override
             public void onResponse(Bitmap bitmap) {
                 song_img.setImageBitmap(bitmap);
+                NotificationController.updateImage(bitmap);
             }
         });
     }
@@ -58,6 +59,7 @@ public class NowPlayingEventListener implements ChildEventListener {
             song_name.setText(song.getName());
             song_artist.setText(song.getArtist());
             displayAlbumCover(song.getUri());
+            NotificationController.notify(context, song);
         }
     }
 
