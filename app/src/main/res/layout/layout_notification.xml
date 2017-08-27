@@ -24,7 +24,7 @@
             android:id="@+id/notification_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/title_1"
+            android:textSize="@dimen/table_text"
             android:maxLines="1"
             android:ellipsize="end"
             android:textColor="@color/colorAccent"
