@@ -4,7 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorPrimaryDark"
     android:padding="@dimen/now_playing_padding">
 
     <ImageView
@@ -25,14 +25,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/title_1"
-            android:singleLine="true"
+            android:maxLines="1"
             android:ellipsize="end"
+            android:textColor="@color/colorAccent"
             android:text="Title"/>
         <TextView
             android:id="@+id/notification_artist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/table_text_small"
+            android:textColor="@color/colorAccent"
             android:text="Artist"/>
     </LinearLayout>
 
@@ -47,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:src="@android:drawable/ic_media_play"
+            android:src="@mipmap/play_button"
             android:visibility="gone"/>
 
         <ImageView
@@ -55,14 +57,14 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:src="@android:drawable/ic_media_pause"/>
+            android:src="@mipmap/pause_button"/>
 
         <ImageView
             android:id="@+id/notification_next"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:src="@android:drawable/ic_media_next"/>
+            android:src="@mipmap/skip_button"/>
     </LinearLayout>
 
 </LinearLayout>
