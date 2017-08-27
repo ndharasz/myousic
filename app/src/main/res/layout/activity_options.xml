@@ -83,13 +83,13 @@
         <TableRow
             android:id="@+id/manage"
             android:padding="@dimen/options_menu_padding"
-            android:onClick="manage">
+            android:onClick="deleteQueue">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="@dimen/big_button_text"
-                android:text="@string/manage"
+                android:text="@string/delete_queue"
                 android:textColor="@color/colorAccent"/>
 
             <ImageView

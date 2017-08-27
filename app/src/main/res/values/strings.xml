@@ -27,12 +27,14 @@
     <string name="import_playlist">Import</string>
     <string name="blacklist">Blacklist</string>
     <string name="manage">Manage</string>
-    <string name="delete_queue">Delete Queue</string>
+    <string name="delete_queue">Delete queue</string>
     <string name="delete_background_playlist">Delete Background Playlist</string>
 
     <string name="enter_party_id">New party ID</string>
     <string name="change_party_warning">Warning: changing the party ID will delete the old party!</string>
     <string name="change_party">Change Party ID</string>
+
+    <string name="delete">Delete</string>
 
     <string name="login">Login to Spotify</string>
 </resources>

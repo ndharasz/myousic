@@ -246,6 +246,12 @@ public class WidgetInteractiveTable extends TableLayout {
         }
     }
 
+    @Override
+    public void removeAllViews() {
+        super.removeAllViews();
+        displayEmptyMessage();
+    }
+
     private void displayEmptyMessage() {
         empty = true;
         tableEmptyListener.OnTableEmptied();

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TableLayout;
@@ -25,7 +26,7 @@ import com.myousic.widgets.WidgetSongRow;
 import java.util.List;
 
 public class ActivityBackgroundPlaylist extends AppCompatActivity {
-    private static final String TAG = "ActivityBackgroundPlaylist";
+    private static final String TAG = "ActivityBgPlaylist";
     private WebAPIWrapper instance;
     private WidgetInteractiveTable backgroundSongTable;
 
@@ -53,12 +54,14 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
             @Override
             public void OnTableEmptied() {
                 findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
+                findViewById(R.id.delete).setVisibility(View.GONE);
             }
         });
         backgroundSongTable.setTableOccupiedListener(new WidgetInteractiveTable.TableOccupiedListener() {
             @Override
             public void OnTableOccupied() {
                 findViewById(R.id.empty_message).setVisibility(View.GONE);
+                findViewById(R.id.delete).setVisibility(View.VISIBLE);
             }
         });
     }
@@ -108,6 +111,29 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
+            }
+        });
+        alertDialogBuilder.show();
+    }
+
+    public void delete(View v) {
+        // Show dialog
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.thinDialog);
+        alertDialogBuilder.setTitle("Delete background playlist?");
+        alertDialogBuilder.setMessage("Cannot be undone");
+        alertDialogBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        alertDialogBuilder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d(TAG, "Deleting background playlist");
+                LocalPlaylistController localPlaylistController = LocalPlaylistController.getInstance();
+                localPlaylistController.destroy();
+                backgroundSongTable.removeAllViews();
             }
         });
         alertDialogBuilder.show();

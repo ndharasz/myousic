@@ -55,7 +55,6 @@
         <activity android:name=".activities.ActivityBackgroundPlaylist" />
         <activity android:name=".activities.ActivityPartyName" />
         <activity android:name=".activities.ActivityBlacklist" />
-        <activity android:name=".activities.ActivityManageParty"></activity>
     </application>
 
 </manifest>
