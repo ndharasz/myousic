@@ -29,7 +29,7 @@ public class ActivitySplash extends AppCompatActivity {
         loginEdit = loginPrefs.edit();
     }
 
-    protected void create(View v) {
+    public void auth(View v) {
         //Create Spotify authentication request
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(
                 getString(R.string.clientID), AuthenticationResponse.Type.TOKEN,

@@ -71,7 +71,7 @@ public class ActivityQueue extends AppCompatActivity {
         databaseReference.addChildEventListener(customQueueEventListener);
     }
 
-    protected void addSong(View v) {
+    public void addSong(View v) {
         SearchController searchController = SearchController.getInstance();
         searchController.setSearchCallback(new SearchController.SearchCallback() {
             @Override

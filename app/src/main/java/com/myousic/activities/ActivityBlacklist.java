@@ -30,6 +30,18 @@ public class ActivityBlacklist extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference("parties").child(partyID).child("blacklist");
         WidgetInteractiveTable table = (WidgetInteractiveTable) findViewById(R.id.blacklist_table);
         table.disableDragAndDrop();
+        table.setTableEmptyListener(new WidgetInteractiveTable.TableEmptyListener() {
+            @Override
+            public void OnTableEmptied() {
+                findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
+            }
+        });
+        table.setTableOccupiedListener(new WidgetInteractiveTable.TableOccupiedListener() {
+            @Override
+            public void OnTableOccupied() {
+                findViewById(R.id.empty_message).setVisibility(View.GONE);
+            }
+        });
         table.setOnSongDeletedListener(new WidgetInteractiveTable.OnSongDeletedListener() {
             @Override
             public void onSongDeleted(Song song, int pos) {
@@ -40,7 +52,7 @@ public class ActivityBlacklist extends AppCompatActivity {
         databaseReference.addChildEventListener(customQueueEventListener);
     }
 
-    protected void addSong(View v) {
+    public void addSong(View v) {
         SearchController searchController = SearchController.getInstance();
         searchController.setSearchCallback(new SearchController.SearchCallback() {
             @Override

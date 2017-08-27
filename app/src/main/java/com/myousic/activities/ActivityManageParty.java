@@ -22,7 +22,7 @@ public class ActivityManageParty extends AppCompatActivity {
         setContentView(R.layout.activity_manage_party);
     }
 
-    protected void deleteBackgroundPlaylist(View v) {
+    public void deleteBackgroundPlaylist(View v) {
         // Show dialog
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.thinDialog);
         alertDialogBuilder.setTitle("Delete background playlist?");
@@ -44,7 +44,7 @@ public class ActivityManageParty extends AppCompatActivity {
         alertDialogBuilder.show();
     }
 
-    protected void deleteQueue(View v) {
+    public void deleteQueue(View v) {
         // Show dialog
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.thinDialog);
         alertDialogBuilder.setTitle("Delete party queue?");

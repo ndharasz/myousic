@@ -74,7 +74,7 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
 
     }
 
-    protected void importPlaylist(View v) {
+    public void importPlaylist(View v) {
         final View playlistsView = LayoutInflater.from(this).inflate(R.layout.layout_playlist_table, null);
         final TableLayout tableLayout = (TableLayout) playlistsView.findViewById(R.id.playlist_table);
         SharedPreferences prefs = getSharedPreferences("loginPrefs", MODE_PRIVATE);
@@ -136,7 +136,7 @@ public class ActivityBackgroundPlaylist extends AppCompatActivity {
         backgroundSongTable.addView(songRow);
     }
 
-    protected void addSong(View v) {
+    public void addSong(View v) {
         SearchController searchController = SearchController.getInstance();
         searchController.setSearchCallback(new SearchController.SearchCallback() {
             @Override

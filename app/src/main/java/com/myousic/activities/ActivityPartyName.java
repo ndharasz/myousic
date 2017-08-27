@@ -17,7 +17,7 @@ public class ActivityPartyName extends AppCompatActivity {
         setContentView(R.layout.activity_party_name);
     }
 
-    protected void changePartyID(View v) {
+    public void changePartyID(View v) {
         String newName = ((EditText) findViewById(R.id.new_id_field)).getText().toString();
         getSharedPreferences("Party", Context.MODE_PRIVATE)
                 .edit().putString("party_id", newName).commit();

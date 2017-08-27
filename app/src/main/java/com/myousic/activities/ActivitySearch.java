@@ -90,7 +90,7 @@ public class ActivitySearch extends AppCompatActivity {
         });
     }
 
-    protected void addSong(View v) {
+    public void addSong(View v) {
         String partyID = getSharedPreferences("Party", Context.MODE_PRIVATE).getString("party_id", null);
         if (partyID == null) {
             Log.d(TAG, "Preferences not set");

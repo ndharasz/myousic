@@ -36,25 +36,25 @@ public class ActivityOptions extends AppCompatActivity {
         v.setBackgroundColor(0xFF007399);
     }
 
-    protected void partyName(View v) {
+    public void partyName(View v) {
         setClickedColor(v);
         Intent partyNameIntent = new Intent(this, ActivityPartyName.class);
         startActivity(partyNameIntent);
     }
 
-    protected void playlist(View v) {
+    public void playlist(View v) {
         setClickedColor(v);
         Intent playlistIntent =  new Intent(this, ActivityBackgroundPlaylist.class);
         startActivity(playlistIntent);
     }
 
-    protected void blacklist(View v) {
+    public void blacklist(View v) {
         setClickedColor(v);
         Intent blacklistIntent =  new Intent(this, ActivityBlacklist.class);
         startActivity(blacklistIntent);
     }
 
-    protected void manage(View v) {
+    public void manage(View v) {
         setClickedColor(v);
         Intent managePartyIntent = new Intent(this, ActivityManageParty.class);
         startActivity(managePartyIntent);

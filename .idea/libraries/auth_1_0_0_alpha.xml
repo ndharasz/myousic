@@ -1,12 +1,12 @@
 <component name="libraryTable">
   <library name="auth-1.0.0-alpha">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.android/build-cache/8857e912caa8828d4dc111b5699b313cc936e8a1/output/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.android/build-cache/8857e912caa8828d4dc111b5699b313cc936e8a1/output/res" />
+      <root url="file://$USER_HOME$/.android/build-cache/1a9934115a830f13bc1c5566d25ffd70aae05f46/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/1a9934115a830f13bc1c5566d25ffd70aae05f46/output/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.spotify.android/auth/1.0.0-alpha/44ff21e2eeb6d63d7dd574b2545ac9965b4aa842/auth-1.0.0-alpha-sources.jar!/" />
+      <root url="jar://$USER_HOME$/Android/gradle-3.4.1/caches/modules-2/files-2.1/com.spotify.android/auth/1.0.0-alpha/44ff21e2eeb6d63d7dd574b2545ac9965b4aa842/auth-1.0.0-alpha-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

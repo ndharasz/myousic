@@ -26,7 +26,7 @@ public class ActivityHome extends AppCompatActivity {
         newPartyController = new NewPartyController(username);
     }
 
-    protected void join(View v) {
+    public void join(View v) {
         Intent joinPartyIntent = new Intent(this, ActivityJoinParty.class);
         startActivity(joinPartyIntent);
     }
@@ -34,7 +34,7 @@ public class ActivityHome extends AppCompatActivity {
     /*
      * This method is called by the big "Create" button on the home activity
      */
-    protected void create(View v) {
+    public void create(View v) {
         SharedPreferences loginPrefs = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         if(!loginPrefs.getBoolean("premium", false)) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.thinDialog);

@@ -12,6 +12,7 @@
     <string name="table_empty_main">No songs queued.  Add a song to listen to it next!</string>
     <string name="table_empty_bg">Create or import a background playlist to avoid awkward silence.</string>
     <string name="click_instructions">Click a title to add it to the party queue.</string>
+    <string name="blacklist_instructions">Add songs here to ban them from your party.</string>
     <string name="choose_party_name">MyParty123</string>
 
     <string name="table_song">Song</string>

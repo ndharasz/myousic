@@ -28,7 +28,7 @@ public class ActivityJoinParty extends AppCompatActivity {
         db = FirebaseDatabase.getInstance();
     }
 
-    protected void join(View v) {
+    public void join(View v) {
         //get input part id field and check db for it
         final String id = partyIDField.getText().toString().toLowerCase();
         db.getReference().child("parties").addListenerForSingleValueEvent(new ValueEventListener() {

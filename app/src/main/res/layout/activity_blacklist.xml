@@ -34,6 +34,16 @@
         android:textColor="@color/colorPrimaryDark"
         android:onClick="addSong"/>
 
+    <TextView
+        android:id="@+id/empty_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/blacklist_instructions"
+        android:textAlignment="center"
+        android:textSize="@dimen/table_text"
+        android:padding="@dimen/queue_padding"
+        android:textColor="@color/colorAccent"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
