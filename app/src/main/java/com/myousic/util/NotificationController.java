@@ -29,6 +29,10 @@ public class NotificationController {
     public static final String ACTION_NEXT = "action_next";
     private static boolean isInitialized = false;
 
+    public static void destroy() {
+        mNotificationManager.cancel(NotificationID);
+    }
+
     public static void notify(Context context, Song song) {
         if(!isInitialized) {
             init(context);

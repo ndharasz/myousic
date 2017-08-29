@@ -12,6 +12,7 @@ import android.widget.TableRow;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.myousic.R;
+import com.myousic.util.NotificationController;
 
 public class ActivityOptions extends AppCompatActivity {
     private static final String TAG = "ActivityOptions";
@@ -75,6 +76,7 @@ public class ActivityOptions extends AppCompatActivity {
                 Log.d(TAG, "Deleting queue");
                 String partyId = getSharedPreferences("Party", MODE_PRIVATE).getString("party_id", "");
                 FirebaseDatabase.getInstance().getReference().child("parties").child(partyId).child("queue").removeValue();
+                NotificationController.destroy();
             }
         });
         alertDialogBuilder.show();

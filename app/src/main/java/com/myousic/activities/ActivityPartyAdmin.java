@@ -114,6 +114,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         String id = getSharedPreferences("Party", Context.MODE_PRIVATE).getString("party_id", "");
         FirebaseDatabase.getInstance().getReference().child("parties").child(id).removeValue();
         LocalPlaylistController.getInstance().destroy();
+        NotificationController.destroy();
         super.onDestroy();
     }
 
