@@ -232,6 +232,41 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         startActivity(optionsIntent);
     }
 
+    public void deleteQueue(View v) {
+        boolean canDelete = LocalPlaylistController.getInstance().playlist.isEmpty();
+        String title;
+        String message;
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.thinDialog);
+        alertDialogBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+
+        if(!canDelete) {
+            title = "No queue to delete.";
+            message = "Ya dingus.";
+        } else {
+            title = "Delete party queue?";
+            message = "Cannot be undone.";
+            alertDialogBuilder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.d(TAG, "Deleting queue");
+                    pause();
+                    String partyId = getSharedPreferences("Party", MODE_PRIVATE).getString("party_id", "");
+                    FirebaseDatabase.getInstance().getReference().child("parties").child(partyId).child("queue").removeValue();
+                    NotificationController.destroy();
+                }
+            });
+        }
+
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setMessage(message);
+
+        alertDialogBuilder.show();
+    }
+
     public void play() {
         if (!nowPlayingEventListener.songPlaying()) {
             QueuedSong nextSong = getNextSong();
@@ -248,10 +283,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                     Log.d(TAG, "Song: " + nextSong.getName());
                     playAndUpdateDatabase(nextSong);
                 } else {
-                    play.setVisibility(View.VISIBLE);
-                    pause.setVisibility(View.GONE);
-                    Intent searchIntent = new Intent(this, ActivitySearch.class);
-                    startActivity(searchIntent);
+                    addSong(null);
                 }
             }
         } else {
@@ -296,8 +328,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
                 Log.d(TAG, "Song: " + nextSong.getName());
                 playAndUpdateDatabase(nextSong);
             } else {
-                Intent searchIntent = new Intent(this, ActivitySearch.class);
-                startActivity(searchIntent);
+                addSong(null);
             }
         }
     }

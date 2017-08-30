@@ -24,25 +24,6 @@
         android:layout_height="match_parent">
 
         <TableRow
-            android:id="@+id/party_name"
-            android:padding="@dimen/options_menu_padding"
-            android:onClick="partyName">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="@dimen/big_button_text"
-                android:text="@string/party_name"
-                android:textColor="@color/colorAccent"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/right_arrow"/>
-
-        </TableRow>
-
-        <TableRow
             android:id="@+id/playlist"
             android:padding="@dimen/options_menu_padding"
             android:onClick="playlist">
@@ -71,25 +52,6 @@
                 android:layout_weight="1"
                 android:textSize="@dimen/big_button_text"
                 android:text="@string/blacklist"
-                android:textColor="@color/colorAccent"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/right_arrow"/>
-
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/manage"
-            android:padding="@dimen/options_menu_padding"
-            android:onClick="deleteQueue">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="@dimen/big_button_text"
-                android:text="@string/delete_queue"
                 android:textColor="@color/colorAccent"/>
 
             <ImageView
