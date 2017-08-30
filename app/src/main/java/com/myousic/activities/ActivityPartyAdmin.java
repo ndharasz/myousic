@@ -115,6 +115,9 @@ public class ActivityPartyAdmin extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child("parties").child(id).removeValue();
         LocalPlaylistController.getInstance().destroy();
         NotificationController.destroy();
+        unregisterReceiver(notificationPlay);
+        unregisterReceiver(notificationPause);
+        unregisterReceiver(notificationNext);
         super.onDestroy();
     }
 
