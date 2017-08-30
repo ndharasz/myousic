@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -30,7 +31,11 @@ public class NotificationController {
     private static boolean isInitialized = false;
 
     public static void destroy() {
-        mNotificationManager.cancel(NotificationID);
+        try {
+            mNotificationManager.cancel(NotificationID);
+        } catch (Exception e) {
+            //Fail silently
+        }
     }
 
     public static void notify(Context context, Song song) {

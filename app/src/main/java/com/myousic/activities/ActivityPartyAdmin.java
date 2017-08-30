@@ -79,6 +79,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
             @Override
             public void OnTableEmptied() {
                 findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
+                findViewById(R.id.delete_queue).setVisibility(View.GONE);
             }
         });
 
@@ -86,6 +87,7 @@ public class ActivityPartyAdmin extends AppCompatActivity {
             @Override
             public void OnTableOccupied() {
                 findViewById(R.id.empty_message).setVisibility(View.GONE);
+                findViewById(R.id.delete_queue).setVisibility(View.VISIBLE);
             }
         });
 

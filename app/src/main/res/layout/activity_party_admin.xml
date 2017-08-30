@@ -95,6 +95,7 @@
     </ScrollView>
 
     <Button
+        android:id="@+id/delete_queue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -103,7 +104,8 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:background="@drawable/button_primary"
         android:text="@string/delete_queue"
-        android:onClick="deleteQueue"/>
+        android:onClick="deleteQueue"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
