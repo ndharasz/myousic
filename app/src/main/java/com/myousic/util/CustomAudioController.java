@@ -88,6 +88,7 @@ public class CustomAudioController {
 
             }
         }, song.getUri(), 0, 0);
+        NotificationController.togglePlayButton(NotificationController.ACTION_PLAY);
         return true;
     }
 
@@ -118,6 +119,7 @@ public class CustomAudioController {
     }
 
     public boolean pause() {
+        NotificationController.togglePlayButton(NotificationController.ACTION_PAUSE);
         //if playing then pause, otherwise it was already paused
         if (player.getPlaybackState().isPlaying) {
             player.pause(operationCallback);
